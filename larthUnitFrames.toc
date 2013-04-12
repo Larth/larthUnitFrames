@@ -1,7 +1,7 @@
 ## Interface: 50200
 ## Version: 0.1
 ## Title: larthUnitFrames
-## Notes: TextUnitFrames
+## Notes: Text based Unit Frames
 ## Author: Larth
 
 larthUnitFrames.lua
