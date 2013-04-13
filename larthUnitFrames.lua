@@ -23,9 +23,9 @@ local playerName = ""
 local classProfile = 0
 local localizedClass, englishClass, classIndex
 local targetWatch, playerWatch 
-local larthRaidUnitFrame = { }
-local larthRaidUnitName = { }
-local larthRaidUnitHealth = { }
+local larthUnitFrame = { }
+local larthUnitName = { }
+local larthUnitHealth = { }
 	
 local function round(number, decimals)
     return tonumber((("%%.%df"):format(decimals)):format(number))
@@ -120,13 +120,19 @@ larthUnitFrames:SetScript("OnUpdate", function(self, elapsed)
 		end
 		playerAuraText:SetText(buffString)
 	end
-
+	
+	if UnitExists("targettarget") then 
+		larthUnitName["targetTarget"]:SetText(UnitName("targettarget"))
+	else
+		larthUnitName["targetTarget"]:SetText("")
+	end
 end)
 -- -----------------------------------------------------------------------------
 -- Register event
 -- -----------------------------------------------------------------------------
 larthUnitFrames:RegisterEvent("UNIT_HEALTH")
 larthUnitFrames:RegisterEvent("VARIABLES_LOADED")
+larthUnitFrames:RegisterEvent("GROUP_ROSTER_UPDATE")
 
 
 larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
@@ -134,7 +140,7 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 	if ( unit == "player") then
 		health = UnitHealth("player")
 		maxHealth = UnitHealthMax("player")
-		playerHealthText:SetText(longHealthString(100*health/maxHealth))
+		larthUnitHealth["player"]:SetText(longHealthString(100*health/maxHealth))
 	elseif (unit == "target") then
 		health = UnitHealth("target")
 		maxHealth = UnitHealthMax("target")
@@ -142,7 +148,19 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 	elseif (unit and strsub(unit,1 ,4) == "raid") then		
 		health = UnitHealth(unit)
 		maxHealth = UnitHealthMax(unit)
-		larthRaidUnitHealth[unit]:SetText(round(100*health/maxHealth, 0))
+		if ( larthUnitHealth[unit] ) then
+			larthUnitHealth[unit]:SetText(round(100*health/maxHealth, 0))
+		end
+	elseif (event == "GROUP_ROSTER_UPDATE") then
+		for i = 1, 40, 1 do
+			if(UnitName("raid"..i)) then
+				larthUnitName["raid"..i]:SetText(UnitName("raid"..i))
+				larthUnitHealth["raid"..i]:SetText("100")
+			else
+				larthUnitName["raid"..i]:SetText("")
+				larthUnitHealth["raid"..i]:SetText("")
+			end
+		end
 	elseif (event == "VARIABLES_LOADED") then
 		localizedClass, englishClass, classIndex = UnitClass("player")
 		PlayerFrame:ClearAllPoints()
@@ -168,7 +186,7 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 			ComboPoint4:SetAlpha(0) 
 			ComboPoint5:SetAlpha(0) 
 		end
-		playerHealthText:SetText(longHealthString(100))
+		larthUnitHealth["player"]:SetText(longHealthString(100))
 		playerName = UnitName("player")
 		playerNameText:SetText(trimUnitName(playerName))
 	end
@@ -236,37 +254,52 @@ end)
 
 
 -- -----------------------------------------------------------------------------
+-- Create Target of Target frame
+-- -----------------------------------------------------------------------------
+larthUnitFrame["targettarget"] = CreateFrame("Frame", "larthUnitFramePlayer", UIParent)
+larthUnitFrame["targettarget"]:SetFrameLevel(3)
+larthUnitFrame["targettarget"]:SetWidth(100)
+larthUnitFrame["targettarget"]:SetHeight(40)
+larthUnitFrame["targettarget"]:SetPoint("CENTER", 400, 0)
+larthUnitFrame["targettarget"]:Show()
+
+larthUnitName["targetTarget"] = larthUnitFrame["targettarget"]:CreateFontString(nil, "OVERLAY")
+larthUnitName["targetTarget"]:SetPoint("CENTER")
+larthUnitName["targetTarget"]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
+larthUnitName["targetTarget"]:SetTextColor(1, 1, 1)
+
+-- -----------------------------------------------------------------------------
 -- Create Player frame
 -- -----------------------------------------------------------------------------
-local larthPlayerUnitFrame = CreateFrame("Frame", "larthPlayerUnitFrame", UIParent)
-larthPlayerUnitFrame:SetFrameLevel(3)
-larthPlayerUnitFrame:SetWidth(200)
-larthPlayerUnitFrame:SetHeight(50)
-larthPlayerUnitFrame:SetPoint("CENTER", -250, 0)
-larthPlayerUnitFrame:Show()
+larthUnitFrame["player"] = CreateFrame("Frame", "larthPlayerUnitFrame", UIParent)
+larthUnitFrame["player"]:SetFrameLevel(3)
+larthUnitFrame["player"]:SetWidth(200)
+larthUnitFrame["player"]:SetHeight(50)
+larthUnitFrame["player"]:SetPoint("CENTER", -250, 0)
+larthUnitFrame["player"]:Show()
 
-playerHealthText = larthPlayerUnitFrame:CreateFontString(nil, "OVERLAY")
-playerHealthText:SetPoint("RIGHT")
-playerHealthText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
-playerHealthText:SetTextColor(1, 1, 1)
+larthUnitHealth["player"] = larthUnitFrame["player"]:CreateFontString(nil, "OVERLAY")
+larthUnitHealth["player"]:SetPoint("RIGHT")
+larthUnitHealth["player"]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
+larthUnitHealth["player"]:SetTextColor(1, 1, 1)
 
-playerEnergyText = larthPlayerUnitFrame:CreateFontString(nil, "OVERLAY")
+playerEnergyText = larthUnitFrame["player"]:CreateFontString(nil, "OVERLAY")
 playerEnergyText:SetPoint("BOTTOMRIGHT")
 playerEnergyText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
 playerEnergyText:SetTextColor(1, 1, 1)
 
-playerNameText = larthPlayerUnitFrame:CreateFontString(nil, "OVERLAY")
+playerNameText = larthUnitFrame["player"]:CreateFontString(nil, "OVERLAY")
 playerNameText:SetPoint("TOPLEFT")
 playerNameText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
 playerNameText:SetTextColor(1, 1, 1)
 
 
-playerSpecialText = larthPlayerUnitFrame:CreateFontString(nil, "OVERLAY")
+playerSpecialText = larthUnitFrame["player"]:CreateFontString(nil, "OVERLAY")
 playerSpecialText:SetPoint("BOTTOMLEFT")
 playerSpecialText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
 playerSpecialText:SetTextColor(1, 1, 1)
 
-playerAuraText = larthPlayerUnitFrame:CreateFontString(nil, "OVERLAY")
+playerAuraText = larthUnitFrame["player"]:CreateFontString(nil, "OVERLAY")
 playerAuraText:SetPoint("TOPRIGHT")
 playerAuraText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
 playerAuraText:SetTextColor(1, 1, 1)
@@ -278,25 +311,23 @@ playerAuraText:SetTextColor(1, 1, 1)
 -- -----------------------------------------------------------------------------
 
 for i = 1, 40, 1 do
-	larthRaidUnitFrame["raid"..i] = CreateFrame("Frame", "larthPlayerUnitFrame"..i, UIParent)
-	larthRaidUnitFrame["raid"..i]:SetFrameLevel(3)
-	larthRaidUnitFrame["raid"..i]:SetWidth(100)
-	larthRaidUnitFrame["raid"..i]:SetHeight(30)
+	larthUnitFrame["raid"..i] = CreateFrame("Frame", "larthPlayerUnitFrame"..i, UIParent)
+	larthUnitFrame["raid"..i]:SetFrameLevel(3)
+	larthUnitFrame["raid"..i]:SetWidth(100)
+	larthUnitFrame["raid"..i]:SetHeight(30)
 	if i <= 25 then 
-		larthRaidUnitFrame["raid"..i]:SetPoint("TOPLEFT", 10, -150-i*20)
+		larthUnitFrame["raid"..i]:SetPoint("TOPLEFT", 10, -150-i*20)
 	else
-		larthRaidUnitFrame["raid"..i]:SetPoint("TOPLEFT", 110, -150-(i-25)*20)
+		larthUnitFrame["raid"..i]:SetPoint("TOPLEFT", 110, -150-(i-25)*20)
 	end
-	larthRaidUnitFrame["raid"..i]:Show()
-	larthRaidUnitName["raid"..i] = larthRaidUnitFrame["raid"..i]:CreateFontString(nil, "OVERLAY")
-	larthRaidUnitName["raid"..i]:SetPoint("TOPLEFT")
-	larthRaidUnitName["raid"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthRaidUnitName["raid"..i]:SetTextColor(1, 1, 1)
-	larthRaidUnitName["raid"..i]:SetText("Raid"..i)
+	larthUnitFrame["raid"..i]:Show()
+	larthUnitName["raid"..i] = larthUnitFrame["raid"..i]:CreateFontString(nil, "OVERLAY")
+	larthUnitName["raid"..i]:SetPoint("TOPLEFT")
+	larthUnitName["raid"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+	larthUnitName["raid"..i]:SetTextColor(1, 1, 1)
 	
-	larthRaidUnitHealth["raid"..i] = larthRaidUnitFrame["raid"..i]:CreateFontString(nil, "OVERLAY")
-	larthRaidUnitHealth["raid"..i]:SetPoint("BOTTOMRIGHT")
-	larthRaidUnitHealth["raid"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthRaidUnitHealth["raid"..i]:SetTextColor(1, 1, 1)
-	larthRaidUnitHealth["raid"..i]:SetText("100")
+	larthUnitHealth["raid"..i] = larthUnitFrame["raid"..i]:CreateFontString(nil, "OVERLAY")
+	larthUnitHealth["raid"..i]:SetPoint("BOTTOMRIGHT")
+	larthUnitHealth["raid"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+	larthUnitHealth["raid"..i]:SetTextColor(1, 1, 1)
 end
