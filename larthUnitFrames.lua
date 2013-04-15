@@ -31,6 +31,7 @@ local larthUnitName = { }
 local larthUnitHealth = { }
 local larthUnitPower = { }
 local larthUnitButton = { }
+local readyCheck = false
 	
 local function round(number, decimals)
     return tonumber((("%%.%df"):format(decimals)):format(number))
@@ -291,14 +292,26 @@ for i = 1, 40, 1 do
 	larthUnitHealth["raid"..i]:SetTextColor(1, 1, 1)
 	
 	--GetReadyCheckStatus("unit")
-	
+	larthUnitFrame["raid"..i]:RegisterEvent("READY_CHECK")
+	larthUnitFrame["raid"..i]:RegisterEvent("READY_CHECK_FINISHED")
+	larthUnitFrame["raid"..i]:RegisterEvent("GROUP_ROSTER_UPDATE")
+	larthUnitFrame["raid"..i]:RegisterEvent("UNIT_HEALTH_FREQUENT")
+	larthUnitFrame["raid"..i]:SetScript("OnEvent", function(self, event, ...)
+
+		if (event = "GROUP_ROSTER_UPDATE")
+			local class, classFileName = UnitClass("raid"..i)
+			larthUnitName["raid"..i]:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), UnitName("raid"..i)))
+			larthUnitHealth["raid"..i]:SetText(round(100*health/maxHealth, 0))
+		elseif (event = "READY_CHECK")
+		
+		elseif (event = "READY_CHECK_FINISHED")
+		
+		end
+	end)
 	larthUnitFrame["raid"..i]:SetScript("OnUpdate", function(self, elapsed)
 		if UnitExists("raid"..i) then 
 			health = UnitHealth("raid"..i)
 			maxHealth = UnitHealthMax("raid"..i)
-			local class, classFileName = UnitClass("raid"..i)
-			larthUnitName["raid"..i]:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), UnitName("raid"..i)))
-			larthUnitHealth["raid"..i]:SetText(round(100*health/maxHealth, 0))
 		else
 			larthUnitHealth["raid"..i]:SetText("")
 			larthUnitName["raid"..i]:SetText("")
@@ -320,12 +333,12 @@ for i = 1, 4, 1 do
 	larthUnitFrame["party"..i]:SetPoint("TOPLEFT", 15, -150-i*20)
 	larthUnitFrame["party"..i]:Show()
 	larthUnitName["party"..i] = larthUnitFrame["party"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitName["party"..i]:SetPoint("TOPLEFT")
+	larthUnitName["party"..i]:SetPoint("LEFT")
 	larthUnitName["party"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
 	larthUnitName["party"..i]:SetTextColor(1, 1, 1)
 	
 	larthUnitHealth["party"..i] = larthUnitFrame["party"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitHealth["party"..i]:SetPoint("BOTTOMRIGHT")
+	larthUnitHealth["party"..i]:SetPoint("RIGHT")
 	larthUnitHealth["party"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
 	larthUnitHealth["party"..i]:SetTextColor(1, 1, 1)
 	
