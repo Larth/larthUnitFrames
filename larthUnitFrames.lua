@@ -17,21 +17,12 @@ local priestTargetAuras = { {"Machtwort: Schild", "ffffff"} }
 -- -----------------------------------------------------------------------------
 -- Variables
 -- -----------------------------------------------------------------------------
-local energy = UnitPower("player")
-local maxEnergy = UnitPowerMax("player")
-local health = UnitHealth("player")
-local maxHealth = UnitHealthMax("player")
-local targetName = ""
-local playerName = ""
-local classProfile = 0
-local localizedClass, englishClass, classIndex
 local targetWatch, playerWatch 
 local larthUnitFrame = { }
 local larthUnitName = { }
 local larthUnitHealth = { }
 local larthUnitPower = { }
 local larthUnitButton = { }
-local readyCheck = false
 	
 local function round(number, decimals)
     return tonumber((("%%.%df"):format(decimals)):format(number))
@@ -110,7 +101,7 @@ larthUnitFrames:RegisterEvent("VARIABLES_LOADED")
 larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 	local unit = ...
 	if (event == "VARIABLES_LOADED") then
-		localizedClass, englishClass, classIndex = UnitClass("player")
+		local localizedClass, englishClass, classIndex = UnitClass("player")
 		PlayerFrame:Hide()
 		health = UnitHealth("player")
 		maxHealth = UnitHealthMax("player")
@@ -142,6 +133,16 @@ larthTargetUnitFrame:SetHeight(50)
 larthTargetUnitFrame:SetPoint("CENTER", 250, 0)
 larthTargetUnitFrame:Show()
 
+larthTargetUnitFrame = CreateFrame("Button", "button_target", UIParent, "SecureActionButtonTemplate ");
+larthTargetUnitFrame:RegisterForClicks("RightButtonUp")
+larthTargetUnitFrame:SetWidth(200)
+larthTargetUnitFrame:SetHeight(50)
+larthTargetUnitFrame:SetPoint("CENTER", 250, 0)
+larthTargetUnitFrame:SetAttribute('type2', 'menu')
+larthTargetUnitFrame.menu = function(self, unit, button, actionType) 
+		if UnitExists("target") then ToggleDropDownMenu(1, 1, TargetFrameDropDown, larthTargetUnitFrame, 0 ,0) end
+	end
+	
 targetHealthText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
 targetHealthText:SetPoint("LEFT")
 targetHealthText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "THINOUTLINE")
@@ -167,15 +168,7 @@ targetPowerText:SetPoint("BOTTOMRIGHT")
 targetPowerText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
 targetPowerText:SetTextColor(1, 1, 1)
 
-larthUnitButton["target"] = CreateFrame("Button", "button_target", UIParent, "SecureActionButtonTemplate ");
-larthUnitButton["target"]:RegisterForClicks("RightButtonUp")
-larthUnitButton["target"]:SetWidth(200)
-larthUnitButton["target"]:SetHeight(50)
-larthUnitButton["target"]:SetPoint("CENTER", 250, 0)
-larthUnitButton["target"]:SetAttribute('type2', 'menu')
-larthUnitButton["target"].menu = function(self, unit, button, actionType) 
-		if UnitExists("target") then ToggleDropDownMenu(1, 1, TargetFrameDropDown, larthUnitButton["target"], 0 ,0) end
-	end
+
 
 larthTargetUnitFrame:RegisterEvent("UNIT_COMBO_POINTS")
 larthTargetUnitFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -197,14 +190,14 @@ end)
 larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("target") then 
 		TargetFrame:Hide()
-		health = UnitHealth("target")
-		maxHealth = UnitHealthMax("target")
+		local health = UnitHealth("target")
+		local maxHealth = UnitHealthMax("target")
 		targetHealthText:SetText(longHealthString(100*health/maxHealth))
-		energy = UnitPower("target")
+		local energy = UnitPower("target")
 		if( energy > 0 ) then targetPowerText:SetText(round(energy, 0))
 		else targetPowerText:SetText("") end
 		
-		targetName = UnitName("target")
+		local targetName = UnitName("target")
 		local class, classFileName = UnitClass("target")
 		targetNameText:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), trimUnitName(targetName)))
 	else 
@@ -236,8 +229,8 @@ larthUnitHealth["targettarget"]:SetTextColor(1, 1, 1)
 
 larthUnitFrame["targettarget"]:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("targettarget") then 
-		health = UnitHealth("targettarget")
-		maxHealth = UnitHealthMax("targettarget")
+		local health = UnitHealth("targettarget")
+		local maxHealth = UnitHealthMax("targettarget")
 		larthUnitHealth["targettarget"]:SetText(round(100*health/maxHealth, 0))
 		local class, classFileName = UnitClass("targettarget")
 		larthUnitName["targettarget"]:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), trimUnitName(UnitName("targettarget"))))
@@ -257,157 +250,21 @@ larthTotButton:SetAttribute('unit', "targettarget")
 
 
 -- -----------------------------------------------------------------------------
--- RaidFrames
--- -----------------------------------------------------------------------------
-
-for i = 1, 40, 1 do
-	larthUnitFrame["raid"..i] = CreateFrame("Frame", "larthUnitFrame_raid"..i, UIParent)
-	larthUnitButton["raid"..i] = CreateFrame("Button", "button_raid"..i, UIParent, "SecureUnitButtonTemplate ");
-	
-	larthUnitButton["raid"..i]:SetAttribute('type1', 'target')
-	larthUnitButton["raid"..i]:SetAttribute('unit', "raid"..i)
-	
-	larthUnitFrame["raid"..i]:SetFrameLevel(3)
-	larthUnitFrame["raid"..i]:SetWidth(100)
-	larthUnitFrame["raid"..i]:SetHeight(30)
-	larthUnitButton["raid"..i]:SetWidth(100)
-	larthUnitButton["raid"..i]:SetHeight(20)
-	
-	if i <= 25 then 
-		larthUnitFrame["raid"..i]:SetPoint("TOPLEFT", 15, -150-i*20)
-		larthUnitButton["raid"..i]:SetPoint("TOPLEFT", 15, -150-i*20)
-	else
-		larthUnitFrame["raid"..i]:SetPoint("TOPLEFT", 120, -150-(i-25)*20)
-		larthUnitButton["raid"..i]:SetPoint("TOPLEFT", 120, -150-(i-25)*20)
-	end
-	larthUnitFrame["raid"..i]:Show()
-	larthUnitName["raid"..i] = larthUnitFrame["raid"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitName["raid"..i]:SetPoint("LEFT")
-	larthUnitName["raid"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthUnitName["raid"..i]:SetTextColor(1, 1, 1)
-	
-	larthUnitHealth["raid"..i] = larthUnitFrame["raid"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitHealth["raid"..i]:SetPoint("RIGHT")
-	larthUnitHealth["raid"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthUnitHealth["raid"..i]:SetTextColor(1, 1, 1)
-	
-	--GetReadyCheckStatus("unit")
-	larthUnitFrame["raid"..i]:RegisterEvent("READY_CHECK")
-	larthUnitFrame["raid"..i]:RegisterEvent("READY_CHECK_FINISHED")
-	larthUnitFrame["raid"..i]:RegisterEvent("GROUP_ROSTER_UPDATE")
-	larthUnitFrame["raid"..i]:RegisterEvent("UNIT_HEALTH_FREQUENT")
-	larthUnitFrame["raid"..i]:SetScript("OnEvent", function(self, event, ...)
-
-		if (event = "GROUP_ROSTER_UPDATE")
-			local class, classFileName = UnitClass("raid"..i)
-			larthUnitName["raid"..i]:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), UnitName("raid"..i)))
-			larthUnitHealth["raid"..i]:SetText(round(100*health/maxHealth, 0))
-		elseif (event = "READY_CHECK")
-		
-		elseif (event = "READY_CHECK_FINISHED")
-		
-		end
-	end)
-	larthUnitFrame["raid"..i]:SetScript("OnUpdate", function(self, elapsed)
-		if UnitExists("raid"..i) then 
-			health = UnitHealth("raid"..i)
-			maxHealth = UnitHealthMax("raid"..i)
-		else
-			larthUnitHealth["raid"..i]:SetText("")
-			larthUnitName["raid"..i]:SetText("")
-		end
-	end)
-end
-
-
--- -----------------------------------------------------------------------------
--- Party Frames
--- -----------------------------------------------------------------------------
-
-for i = 1, 4, 1 do
-	larthUnitFrame["party"..i] = CreateFrame("Frame", "larthUnitFrame_party"..i, UIParent)
-	larthUnitFrame["party"..i]:SetFrameLevel(3)
-	larthUnitFrame["party"..i]:SetWidth(100)
-	larthUnitFrame["party"..i]:SetHeight(20)
-
-	larthUnitFrame["party"..i]:SetPoint("TOPLEFT", 15, -150-i*20)
-	larthUnitFrame["party"..i]:Show()
-	larthUnitName["party"..i] = larthUnitFrame["party"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitName["party"..i]:SetPoint("LEFT")
-	larthUnitName["party"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthUnitName["party"..i]:SetTextColor(1, 1, 1)
-	
-	larthUnitHealth["party"..i] = larthUnitFrame["party"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitHealth["party"..i]:SetPoint("RIGHT")
-	larthUnitHealth["party"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthUnitHealth["party"..i]:SetTextColor(1, 1, 1)
-	
-	larthUnitFrame["party"..i]:SetScript("OnUpdate", function(self, elapsed)
-		if UnitExists("party"..i) and not IsInRaid() then 
-			health = UnitHealth("party"..i)
-			maxHealth = UnitHealthMax("party"..i)
-			larthUnitName["party"..i]:SetText(UnitName("party"..i))
-			larthUnitHealth["party"..i]:SetText(round(100*health/maxHealth, 0))
-		else
-			larthUnitHealth["party"..i]:SetText("")
-			larthUnitName["party"..i]:SetText("")
-		end
-	end)
-end
-
--- -----------------------------------------------------------------------------
--- Boss Frames
--- -----------------------------------------------------------------------------
-
-for i = 1, 5, 1 do
-	larthUnitFrame["boss"..i] = CreateFrame("Frame", "larthUnitFrame_boss"..i, UIParent)
-	larthUnitFrame["boss"..i]:SetFrameLevel(3)
-	larthUnitFrame["boss"..i]:SetWidth(100)
-	larthUnitFrame["boss"..i]:SetHeight(30)
-
-	larthUnitFrame["boss"..i]:SetPoint("RIGHT", -30, 50-i*30)
-	larthUnitFrame["boss"..i]:Show()
-	larthUnitName["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitName["boss"..i]:SetPoint("TOP")
-	larthUnitName["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthUnitName["boss"..i]:SetTextColor(1, 1, 1)
-	
-	larthUnitHealth["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitHealth["boss"..i]:SetPoint("BOTTOMLEFT")
-	larthUnitHealth["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthUnitHealth["boss"..i]:SetTextColor(1, 1, 1)
-	
-	larthUnitPower["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitPower["boss"..i]:SetPoint("BOTTOMRIGHT")
-	larthUnitPower["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
-	larthUnitPower["boss"..i]:SetTextColor(1, 1, 1)
-	
-	
-
-	larthUnitFrame["boss"..i]:SetScript("OnUpdate", function(self, elapsed)
-		if UnitExists("boss"..i) and not IsInRaid() then 
-			health = UnitHealth("boss"..i)
-			maxHealth = UnitHealthMax("boss"..i)
-			larthUnitName["boss"..i]:SetText(UnitName("boss"..i))
-			larthUnitHealth["boss"..i]:SetText(round(100*health/maxHealth, 0))
-			larthUnitPower["boss"..i]:SetText(round(UnitPower("boss"..i), 0))
-		else
-			larthUnitHealth["boss"..i]:SetText("")
-			larthUnitName["boss"..i]:SetText("")
-			larthUnitPower["boss"..i]:SetText("")
-		end
-	end)
-end
--- -----------------------------------------------------------------------------
 -- Create Player frame
 -- -----------------------------------------------------------------------------
-larthPlayerFrame = CreateFrame("Frame", "larthUnitFrame_player", UIParent)
-larthPlayerFrame:SetFrameLevel(3)
+
+larthPlayerFrame = CreateFrame("Button", "button_player", UIParent, "SecureActionButtonTemplate ");
+larthPlayerFrame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 larthPlayerFrame:SetWidth(200)
 larthPlayerFrame:SetHeight(50)
 larthPlayerFrame:SetPoint("CENTER", -250, 0)
-larthPlayerFrame:Show()
-
+larthPlayerFrame:SetAttribute('type1', 'target')
+larthPlayerFrame:SetAttribute('unit', "player")
+larthPlayerFrame:SetAttribute('type2', 'menu')
+larthPlayerFrame.menu = function(self, unit, button, actionType) 
+		ToggleDropDownMenu(1, 1, PlayerFrameDropDown, larthPlayerFrame, 0 ,0) 
+	end
+	
 larthPlayerHealth = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
 larthPlayerHealth:SetPoint("RIGHT")
 larthPlayerHealth:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
@@ -434,20 +291,15 @@ playerAuraText:SetPoint("TOPRIGHT")
 playerAuraText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
 playerAuraText:SetTextColor(1, 1, 1)
 
-larthUnitButton["player"] = CreateFrame("Button", "button_player", UIParent, "SecureActionButtonTemplate ");
-larthUnitButton["player"]:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-larthUnitButton["player"]:SetWidth(200)
-larthUnitButton["player"]:SetHeight(50)
-larthUnitButton["player"]:SetPoint("CENTER", -250, 0)
-larthUnitButton["player"]:SetAttribute('type1', 'target')
-larthUnitButton["player"]:SetAttribute('unit', "player")
-larthUnitButton["player"]:SetAttribute('type2', 'menu')
-larthUnitButton["player"].menu = function(self, unit, button, actionType) 
-		ToggleDropDownMenu(1, 1, PlayerFrameDropDown, larthUnitButton["player"], 0 ,0) 
-	end
+
 
 
 larthPlayerFrame:SetScript("OnUpdate", function(self, elapsed)
+	if UnitIsPVP("player") then
+		larthPlayerName:SetTextColor(1, 0, 0)
+	else
+		larthPlayerName:SetTextColor(1, 1, 1)
+	end
 	larthPlayerHealth:SetText(longHealthString(100*UnitHealth("player")/UnitHealthMax("player")))
 	larthPlayerPower:SetText(round(UnitPower("player"), 0))
 	local tempString = ""
