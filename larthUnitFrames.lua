@@ -103,6 +103,12 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 	if (event == "VARIABLES_LOADED") then
 		local localizedClass, englishClass, classIndex = UnitClass("player")
 		PlayerFrame:Hide()
+        PlayerFrame:UnregisterAllEvents()
+        TargetFrame:Hide()
+        TargetFrame:UnregisterAllEvents()
+
+        ComboFrame:Hide()
+        ComboFrame:UnregisterAllEvents()
 		health = UnitHealth("player")
 		maxHealth = UnitHealthMax("player")
 		if (classIndex == 6) then
@@ -112,11 +118,11 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 		if (classIndex == 4) then 
 			targetWatch = rogueTargetAuras
 			playerWatch = roguePlayerAuras
-			ComboPoint1:SetAlpha(0) 
-			ComboPoint2:SetAlpha(0) 
-			ComboPoint3:SetAlpha(0) 
-			ComboPoint4:SetAlpha(0) 
-			ComboPoint5:SetAlpha(0) 
+			--ComboPoint1:SetAlpha(0) 
+			--ComboPoint2:SetAlpha(0) 
+			--ComboPoint3:SetAlpha(0) 
+			--ComboPoint4:SetAlpha(0) 
+			--ComboPoint5:SetAlpha(0) 
 		end
 	end
 end)
@@ -126,18 +132,13 @@ end)
 -- -----------------------------------------------------------------------------
 -- Create Target frame
 -- -----------------------------------------------------------------------------
-local larthTargetUnitFrame = CreateFrame("Frame", "larthTargetUnitFrame", UIParent)
-larthTargetUnitFrame:SetFrameLevel(3)
-larthTargetUnitFrame:SetWidth(200)
-larthTargetUnitFrame:SetHeight(50)
-larthTargetUnitFrame:SetPoint("CENTER", 250, 0)
-larthTargetUnitFrame:Show()
 
-larthTargetUnitFrame = CreateFrame("Button", "button_target", UIParent, "SecureActionButtonTemplate ");
+larthTargetUnitFrame = CreateFrame("Button", "button_target", UIParent, "SecureActionButtonTemplate");
 larthTargetUnitFrame:RegisterForClicks("RightButtonUp")
 larthTargetUnitFrame:SetWidth(200)
 larthTargetUnitFrame:SetHeight(50)
 larthTargetUnitFrame:SetPoint("CENTER", 250, 0)
+
 larthTargetUnitFrame:SetAttribute('type2', 'menu')
 larthTargetUnitFrame.menu = function(self, unit, button, actionType) 
 		if UnitExists("target") then ToggleDropDownMenu(1, 1, TargetFrameDropDown, larthTargetUnitFrame, 0 ,0) end
@@ -189,7 +190,7 @@ end)
 
 larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("target") then 
-		TargetFrame:Hide()
+		--TargetFrame:Hide()
 		local health = UnitHealth("target")
 		local maxHealth = UnitHealthMax("target")
 		targetHealthText:SetText(longHealthString(100*health/maxHealth))
@@ -210,24 +211,26 @@ end)
 -- -----------------------------------------------------------------------------
 -- Create Target of Target frame
 -- -----------------------------------------------------------------------------
-larthUnitFrame["targettarget"] = CreateFrame("Frame", "larthUnitFrameToT", UIParent)
-larthUnitFrame["targettarget"]:SetFrameLevel(3)
-larthUnitFrame["targettarget"]:SetWidth(100)
-larthUnitFrame["targettarget"]:SetHeight(30)
-larthUnitFrame["targettarget"]:SetPoint("CENTER", 400, 0)
-larthUnitFrame["targettarget"]:Show()
 
-larthUnitName["targettarget"] = larthUnitFrame["targettarget"]:CreateFontString(nil, "OVERLAY")
+larthTotButton = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
+larthTotButton:RegisterForClicks("LeftButtonUp")
+larthTotButton:SetWidth(100)
+larthTotButton:SetHeight(30)
+larthTotButton:SetPoint("CENTER", 400, 0)
+larthTotButton:SetAttribute('type1', 'target')
+larthTotButton:SetAttribute('unit', "targettarget")
+
+larthUnitName["targettarget"] = larthTotButton:CreateFontString(nil, "OVERLAY")
 larthUnitName["targettarget"]:SetPoint("TOPRIGHT")
 larthUnitName["targettarget"]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 18, "OUTLINE")
 larthUnitName["targettarget"]:SetTextColor(1, 1, 1)
 
-larthUnitHealth["targettarget"] = larthUnitFrame["targettarget"]:CreateFontString(nil, "OVERLAY")
+larthUnitHealth["targettarget"] = larthTotButton:CreateFontString(nil, "OVERLAY")
 larthUnitHealth["targettarget"]:SetPoint("BOTTOMRIGHT")
 larthUnitHealth["targettarget"]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 18, "OUTLINE")
 larthUnitHealth["targettarget"]:SetTextColor(1, 1, 1)
 
-larthUnitFrame["targettarget"]:SetScript("OnUpdate", function(self, elapsed)
+larthTotButton:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("targettarget") then 
 		local health = UnitHealth("targettarget")
 		local maxHealth = UnitHealthMax("targettarget")
@@ -240,13 +243,7 @@ larthUnitFrame["targettarget"]:SetScript("OnUpdate", function(self, elapsed)
 	end
 end)
 
-larthTotButton = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
-larthTotButton:RegisterForClicks("LeftButtonUp")
-larthTotButton:SetWidth(100)
-larthTotButton:SetHeight(30)
-larthTotButton:SetPoint("CENTER", 400, 0)
-larthTotButton:SetAttribute('type1', 'target')
-larthTotButton:SetAttribute('unit', "targettarget")
+
 
 
 -- -----------------------------------------------------------------------------
@@ -335,4 +332,34 @@ larthPlayerFrame:RegisterEvent("VARIABLES_LOADED")
 
 larthPlayerFrame:SetScript("OnEvent", function(self, event, ...)
 	larthPlayerName:SetText(trimUnitName(UnitName("player")))
+end)
+
+
+-- -----------------------------------------------------------------------------
+-- Create Special blah blah frame
+-- -----------------------------------------------------------------------------
+larthClassSpecial = CreateFrame("Frame", "larsClassSpecial", UIParent)
+larthClassSpecial:SetFrameLevel(3)
+larthClassSpecial:SetWidth(50)
+larthClassSpecial:SetHeight(50)
+larthClassSpecial:SetPoint("CENTER", 0, 0)
+larthClassSpecial:Show()
+
+larthClassSpecialText = larthClassSpecial:CreateFontString(nil, "OVERLAY")
+larthClassSpecialText:SetPoint("CENTER")
+larthClassSpecialText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
+larthClassSpecialText:SetTextColor(1, 1, 1)
+
+larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
+	local comboPoints = GetComboPoints("player", "target");
+	if ( comboPoints < 1 ) then
+		larthClassSpecialText:SetText("")
+	elseif (comboPoints < 3) then 
+		larthClassSpecialText:SetText(comboPoints)
+	elseif (comboPoints < 5) then 
+		larthClassSpecialText:SetText(format("|cff%s%s|r", "ff9900", comboPoints))
+	else 
+		larthClassSpecialText:SetText(format("|cff%s%s|r", "ff0000", comboPoints))
+	end
+
 end)
