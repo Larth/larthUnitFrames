@@ -114,15 +114,40 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 		if (classIndex == 6) then
 			RuneFrame:SetAlpha(0)
 			targetWatch	=	dkTargetAuras
+			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
+				-- local comboPoints = GetComboPoints("player", "target");
+				-- if ( comboPoints < 1 ) then
+					-- larthClassSpecialText:SetText("")
+				-- elseif (comboPoints < 3) then 
+					-- larthClassSpecialText:SetText(comboPoints)
+				-- elseif (comboPoints < 5) then 
+					-- larthClassSpecialText:SetText(format("|cff%s%s|r", "ff9900", comboPoints))
+				-- else 
+					-- larthClassSpecialText:SetText(format("|cff%s%s|r", "ff0000", comboPoints))
+				-- end
+
+			end)
 		end
 		if (classIndex == 4) then 
 			targetWatch = rogueTargetAuras
 			playerWatch = roguePlayerAuras
-			--ComboPoint1:SetAlpha(0) 
-			--ComboPoint2:SetAlpha(0) 
-			--ComboPoint3:SetAlpha(0) 
-			--ComboPoint4:SetAlpha(0) 
-			--ComboPoint5:SetAlpha(0) 
+			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
+				local comboPoints = GetComboPoints("player", "target");
+				if ( comboPoints < 1 ) then
+					larthClassSpecialText:SetText("")
+				elseif (comboPoints < 2) then 
+					larthClassSpecialText:SetText("#")
+				elseif (comboPoints < 3) then 
+					larthClassSpecialText:SetText("# #")
+				elseif (comboPoints < 4) then 
+					larthClassSpecialText:SetText(format("|cff%s%s|r", "ffff00", "# # #"))
+				elseif (comboPoints < 5) then 
+					larthClassSpecialText:SetText(format("|cff%s%s|r", "ff9900", "# # # #"))
+				else
+					larthClassSpecialText:SetText(format("|cff%s%s|r", "ff0000", "# # # # #"))
+				end
+
+			end)
 		end
 	end
 end)
@@ -342,24 +367,10 @@ larthClassSpecial = CreateFrame("Frame", "larsClassSpecial", UIParent)
 larthClassSpecial:SetFrameLevel(3)
 larthClassSpecial:SetWidth(50)
 larthClassSpecial:SetHeight(50)
-larthClassSpecial:SetPoint("CENTER", 0, 0)
+larthClassSpecial:SetPoint("CENTER", 0, -100)
 larthClassSpecial:Show()
 
 larthClassSpecialText = larthClassSpecial:CreateFontString(nil, "OVERLAY")
 larthClassSpecialText:SetPoint("CENTER")
 larthClassSpecialText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
 larthClassSpecialText:SetTextColor(1, 1, 1)
-
-larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
-	local comboPoints = GetComboPoints("player", "target");
-	if ( comboPoints < 1 ) then
-		larthClassSpecialText:SetText("")
-	elseif (comboPoints < 3) then 
-		larthClassSpecialText:SetText(comboPoints)
-	elseif (comboPoints < 5) then 
-		larthClassSpecialText:SetText(format("|cff%s%s|r", "ff9900", comboPoints))
-	else 
-		larthClassSpecialText:SetText(format("|cff%s%s|r", "ff0000", comboPoints))
-	end
-
-end)
