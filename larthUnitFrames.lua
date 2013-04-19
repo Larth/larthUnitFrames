@@ -115,19 +115,19 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 			RuneFrame:SetAlpha(0)
 			targetWatch	=	dkTargetAuras
 			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
-				-- local comboPoints = GetComboPoints("player", "target");
-				-- if ( comboPoints < 1 ) then
-					-- larthClassSpecialText:SetText("")
-				-- elseif (comboPoints < 3) then 
-					-- larthClassSpecialText:SetText(comboPoints)
-				-- elseif (comboPoints < 5) then 
-					-- larthClassSpecialText:SetText(format("|cff%s%s|r", "ff9900", comboPoints))
-				-- else 
-					-- larthClassSpecialText:SetText(format("|cff%s%s|r", "ff0000", comboPoints))
-				-- end
-
+			for i=1, 6, 1 do
+				local start, duration, runeReady = GetRuneCooldown(i)
+				runeType = GetRuneType(i)
+				if runeReady then
+					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "#")
+				else
+					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "_")
+				end
+			end
+			larthClassSpecialText:SetText(tempString)
 			end)
 		end
+
 		if (classIndex == 4) then 
 			targetWatch = rogueTargetAuras
 			playerWatch = roguePlayerAuras

@@ -10,6 +10,19 @@ local function round(number, decimals)
     return tonumber((("%%.%df"):format(decimals)):format(number))
 end
 
+larthRaidFrame = CreateFrame("Frame")
+
+larthRaidFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
+larthRaidFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED")
+larthRaidFrame:SetScript("OnEvent", function(self, event, ...)
+	for i = 1, 40, 1 do
+		if UnitExists("raid"..i) then 
+			larthUnitFrame["raid"..i]:Show()
+		else
+			larthUnitFrame["raid"..i]:Hide()
+		end
+	end
+end)
 for i = 1, 40, 1 do
 
 	--Create the Frame
@@ -27,7 +40,7 @@ for i = 1, 40, 1 do
 	else
 		larthUnitFrame["raid"..i]:SetPoint("TOPLEFT", 120, -150-(i-25)*20)
 	end
-	larthUnitFrame["raid"..i]:Show()
+	larthUnitFrame["raid"..i]:Hide()
 	larthUnitName["raid"..i] = larthUnitFrame["raid"..i]:CreateFontString(nil, "OVERLAY")
 	larthUnitName["raid"..i]:SetPoint("LEFT")
 	larthUnitName["raid"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
@@ -43,7 +56,7 @@ for i = 1, 40, 1 do
 	larthUnitFrame["raid"..i]:RegisterEvent("GROUP_ROSTER_UPDATE")
 	larthUnitFrame["raid"..i]:RegisterEvent("PLAYER_ROLES_ASSIGNED")
 
-	larthUnitFrame["raid"..i]:SetScript("OnEvent", function(self, event, ...)
+	larthUnitFrame["raid"..i]:SetScript("OnEvent", function(self, event, ...)	
 		if UnitExists("raid"..i) then 
 						
 			local class, classFileName = UnitClass("raid"..i)
@@ -59,7 +72,9 @@ for i = 1, 40, 1 do
 		if UnitExists("raid"..i) then 
 			local health = UnitHealth("raid"..i)
 			local maxHealth = UnitHealthMax("raid"..i)
-			larthUnitHealth["raid"..i]:SetText(round(100*health/maxHealth, 0))
+			local percent = round(100*health/maxHealth, 0)
+			larthUnitHealth["raid"..i]:SetText(round(percent))
+			larthUnitHealth["raid"..i]:SetTextColor(1-(percent/100), (percent/100), 0)
 		else
 			larthUnitHealth["raid"..i]:SetText("")
 			larthUnitName["raid"..i]:SetText("")
