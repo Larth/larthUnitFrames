@@ -23,6 +23,8 @@ local larthUnitName = { }
 local larthUnitHealth = { }
 local larthUnitPower = { }
 local larthUnitButton = { }
+
+local fontset = "Interface\\AddOns\\larthUnitFrames\\font.ttf"
 	
 local function round(number, decimals)
     return tonumber((("%%.%df"):format(decimals)):format(number))
@@ -81,16 +83,11 @@ end
 local larthUnitFrames = CreateFrame("Frame")
 
 larthUnitFrames:SetScript("OnUpdate", function(self, elapsed)
-	local debuffString = ""
-	if ( targetWatch ) then
-		for i=1, # targetWatch do
-			local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", targetWatch[i][1])
-			if(unitCaster=="player")then 
-				debuffString = debuffString..format("|cff%s%s|r", targetWatch[i][2], (round(expirationTime - GetTime()).." "))
-			end
+		if not UnitExists("target") then 
+			larthTargetUnitFrame:Hide()
+		else 
+			larthTargetUnitFrame:Show()
 		end
-	end
-	targetAuraText:SetText(debuffString)
 end)
 -- -----------------------------------------------------------------------------
 -- Register event
@@ -115,13 +112,17 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 			RuneFrame:SetAlpha(0)
 			targetWatch	=	dkTargetAuras
 			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
+			local tempString = "";
 			for i=1, 6, 1 do
+				
 				local start, duration, runeReady = GetRuneCooldown(i)
 				runeType = GetRuneType(i)
+				local cooldown = round(duration-GetTime()+start)
+				--(round(expirationTime - GetTime())
 				if runeReady then
-					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "#")
+					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "# ")
 				else
-					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "_")
+					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), cooldown.." ")
 				end
 			end
 			larthClassSpecialText:SetText(tempString)
@@ -171,27 +172,27 @@ larthTargetUnitFrame.menu = function(self, unit, button, actionType)
 	
 targetHealthText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
 targetHealthText:SetPoint("LEFT")
-targetHealthText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "THINOUTLINE")
+targetHealthText:SetFont(fontset, 20, "THINOUTLINE")
 targetHealthText:SetTextColor(1, 1, 1)
 
 targetComboPoints = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
 targetComboPoints:SetPoint("BOTTOMLEFT")
-targetComboPoints:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 18, "THINOUTLINE")
+targetComboPoints:SetFont(fontset, 18, "THINOUTLINE")
 targetComboPoints:SetTextColor(1, 1, 1)
 
 targetNameText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
 targetNameText:SetPoint("TOPRIGHT")
-targetNameText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+targetNameText:SetFont(fontset, 14, "THINOUTLINE")
 targetNameText:SetTextColor(1, 1, 1)
 
 targetAuraText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
 targetAuraText:SetPoint("TOPLEFT")
-targetAuraText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+targetAuraText:SetFont(fontset, 14, "THINOUTLINE")
 targetAuraText:SetTextColor(1, 1, 1)
 
 targetPowerText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
 targetPowerText:SetPoint("BOTTOMRIGHT")
-targetPowerText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+targetPowerText:SetFont(fontset, 14, "THINOUTLINE")
 targetPowerText:SetTextColor(1, 1, 1)
 
 
@@ -231,6 +232,16 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 		targetNameText:SetText("")
 		targetPowerText:SetText("")
 	end
+	local debuffString = ""
+	if ( targetWatch ) then
+		for i=1, # targetWatch do
+			local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", targetWatch[i][1])
+			if(unitCaster=="player")then 
+				debuffString = debuffString..format("|cff%s%s|r", targetWatch[i][2], (round(expirationTime - GetTime()).." "))
+			end
+		end
+	end
+	targetAuraText:SetText(debuffString)
 end)
 
 -- -----------------------------------------------------------------------------
@@ -247,12 +258,12 @@ larthTotButton:SetAttribute('unit', "targettarget")
 
 larthUnitName["targettarget"] = larthTotButton:CreateFontString(nil, "OVERLAY")
 larthUnitName["targettarget"]:SetPoint("TOPRIGHT")
-larthUnitName["targettarget"]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 18, "OUTLINE")
+larthUnitName["targettarget"]:SetFont(fontset, 18, "OUTLINE")
 larthUnitName["targettarget"]:SetTextColor(1, 1, 1)
 
 larthUnitHealth["targettarget"] = larthTotButton:CreateFontString(nil, "OVERLAY")
 larthUnitHealth["targettarget"]:SetPoint("BOTTOMRIGHT")
-larthUnitHealth["targettarget"]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 18, "OUTLINE")
+larthUnitHealth["targettarget"]:SetFont(fontset, 18, "OUTLINE")
 larthUnitHealth["targettarget"]:SetTextColor(1, 1, 1)
 
 larthTotButton:SetScript("OnUpdate", function(self, elapsed)
@@ -289,28 +300,28 @@ larthPlayerFrame.menu = function(self, unit, button, actionType)
 	
 larthPlayerHealth = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
 larthPlayerHealth:SetPoint("RIGHT")
-larthPlayerHealth:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
+larthPlayerHealth:SetFont(fontset, 20, "OUTLINE")
 larthPlayerHealth:SetTextColor(1, 1, 1)
 
 larthPlayerPower = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
 larthPlayerPower:SetPoint("BOTTOMRIGHT")
-larthPlayerPower:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+larthPlayerPower:SetFont(fontset, 14, "THINOUTLINE")
 larthPlayerPower:SetTextColor(1, 1, 1)
 
 larthPlayerName = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
 larthPlayerName:SetPoint("TOPLEFT")
-larthPlayerName:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+larthPlayerName:SetFont(fontset, 14, "THINOUTLINE")
 larthPlayerName:SetTextColor(1, 1, 1)
 
 
 playerSpecialText = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
 playerSpecialText:SetPoint("BOTTOMLEFT")
-playerSpecialText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+playerSpecialText:SetFont(fontset, 14, "THINOUTLINE")
 playerSpecialText:SetTextColor(1, 1, 1)
 
 playerAuraText = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
 playerAuraText:SetPoint("TOPRIGHT")
-playerAuraText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+playerAuraText:SetFont(fontset, 14, "THINOUTLINE")
 playerAuraText:SetTextColor(1, 1, 1)
 
 
@@ -372,5 +383,5 @@ larthClassSpecial:Show()
 
 larthClassSpecialText = larthClassSpecial:CreateFontString(nil, "OVERLAY")
 larthClassSpecialText:SetPoint("CENTER")
-larthClassSpecialText:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
+larthClassSpecialText:SetFont(fontset, 20, "OUTLINE")
 larthClassSpecialText:SetTextColor(1, 1, 1)

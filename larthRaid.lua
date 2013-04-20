@@ -2,6 +2,7 @@ local larthUnitFrame = {}
 local larthUnitButton = {}
 local larthUnitName = {}
 local larthUnitHealth = {}
+local larthRaidUnit = {}
 
 -- -----------------------------------------------------------------------------
 -- RaidFrames
@@ -24,7 +25,7 @@ larthRaidFrame:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 for i = 1, 40, 1 do
-
+	
 	--Create the Frame
 	larthUnitFrame["raid"..i] = CreateFrame("Button", "button_raid"..i, UIParent, "SecureUnitButtonTemplate ");	
 	larthUnitFrame["raid"..i]:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -58,9 +59,22 @@ for i = 1, 40, 1 do
 
 	larthUnitFrame["raid"..i]:SetScript("OnEvent", function(self, event, ...)	
 		if UnitExists("raid"..i) then 
-						
+			larthRaidUnit["raid"..i] = {}		
 			local class, classFileName = UnitClass("raid"..i)
-			larthUnitName["raid"..i]:SetText(UnitName("raid"..i))
+			local role = UnitGroupRolesAssigned("raid"..i)
+			local derSring = ""
+			larthRaidUnit["raid"..i].role = role
+			if role == "DAMAGER" then
+				derString = format("|cff%s%s|r", "ff9933", "D: ")
+			elseif role == "HEALER" then
+				derString = format("|cff%s%s|r", "33ff33", "H: ")
+			elseif role == "TANK" then
+				derString = format("|cff%s%s|r", "ccff33", "T: ")
+			else
+				derString = format("|cff%s%s|r", "ffffff", "_: ")
+			end
+			larthUnitName["raid"..i]:SetText(derString..UnitName("raid"..i))
+
 			if (classFileName) then
 				larthUnitName["raid"..i]:SetTextColor(RAID_CLASS_COLORS[classFileName].r, RAID_CLASS_COLORS[classFileName].g, RAID_CLASS_COLORS[classFileName].b)
 			end		
