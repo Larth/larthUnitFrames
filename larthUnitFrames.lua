@@ -103,13 +103,25 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
         PlayerFrame:UnregisterAllEvents()
         TargetFrame:Hide()
         TargetFrame:UnregisterAllEvents()
-
         ComboFrame:Hide()
         ComboFrame:UnregisterAllEvents()
 		health = UnitHealth("player")
 		maxHealth = UnitHealthMax("player")
+		if (classIndex == 10) then
+			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
+				local tempString = ""
+				local power = UnitPower("player" , 12);
+				if power > 0 then
+					for i = 1, power, 1 do
+						tempString = tempString.."# "
+					end
+				end
+				larthClassSpecialText:SetText(tempString)
+			end)
+		end
 		if (classIndex == 6) then
-			RuneFrame:SetAlpha(0)
+			RuneFrame:UnregisterAllEvents()
+			RuneFrame:Hide()
 			targetWatch	=	dkTargetAuras
 			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
 			local tempString = "";
@@ -161,7 +173,7 @@ end)
 
 larthTargetUnitFrame = CreateFrame("Button", "button_target", UIParent, "SecureActionButtonTemplate");
 larthTargetUnitFrame:RegisterForClicks("RightButtonUp")
-larthTargetUnitFrame:SetWidth(200)
+larthTargetUnitFrame:SetWidth(250)
 larthTargetUnitFrame:SetHeight(50)
 larthTargetUnitFrame:SetPoint("CENTER", 250, 0)
 
@@ -171,14 +183,9 @@ larthTargetUnitFrame.menu = function(self, unit, button, actionType)
 	end
 	
 targetHealthText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
-targetHealthText:SetPoint("LEFT")
+targetHealthText:SetPoint("RIGHT")
 targetHealthText:SetFont(fontset, 20, "THINOUTLINE")
 targetHealthText:SetTextColor(1, 1, 1)
-
-targetComboPoints = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
-targetComboPoints:SetPoint("BOTTOMLEFT")
-targetComboPoints:SetFont(fontset, 18, "THINOUTLINE")
-targetComboPoints:SetTextColor(1, 1, 1)
 
 targetNameText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
 targetNameText:SetPoint("TOPRIGHT")
@@ -191,38 +198,44 @@ targetAuraText:SetFont(fontset, 14, "THINOUTLINE")
 targetAuraText:SetTextColor(1, 1, 1)
 
 targetPowerText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
-targetPowerText:SetPoint("BOTTOMRIGHT")
+targetPowerText:SetPoint("BOTTOMLEFT")
 targetPowerText:SetFont(fontset, 14, "THINOUTLINE")
 targetPowerText:SetTextColor(1, 1, 1)
 
+larthTargetAbs = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
+larthTargetAbs:SetPoint("LEFT")
+larthTargetAbs:SetFont(fontset, 20, "OUTLINE")
+larthTargetAbs:SetTextColor(1, 1, 1)
 
-
-larthTargetUnitFrame:RegisterEvent("UNIT_COMBO_POINTS")
-larthTargetUnitFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-
-larthTargetUnitFrame:SetScript("OnEvent", function(self, event, ...)
-	local comboPoints = GetComboPoints("player", "target");
-	local arg1 = ...
-	if ( comboPoints < 1 ) then
-		targetComboPoints:SetText("")
-	elseif (comboPoints < 3) then 
-		targetComboPoints:SetText(comboPoints)
-	elseif (comboPoints < 5) then 
-		targetComboPoints:SetText(format("|cff%s%s|r", "ff9900", comboPoints))
-	else 
-		targetComboPoints:SetText(format("|cff%s%s|r", "ff0000", comboPoints))
-	end
-end)
+larthTargetPowerLong = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
+larthTargetPowerLong:SetPoint("BOTTOMRIGHT")
+larthTargetPowerLong:SetFont(fontset, 14, "OUTLINE")
+larthTargetPowerLong:SetTextColor(1, 1, 1)
 
 larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("target") then 
-		--TargetFrame:Hide()
 		local health = UnitHealth("target")
 		local maxHealth = UnitHealthMax("target")
-		targetHealthText:SetText(longHealthString(100*health/maxHealth))
+		local derString = ""..health
+		local percent = 100*health/maxHealth
+		targetHealthText:SetText(longHealthString(percent))
+		larthTargetAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
+		if #derString > 7 then
+			larthTargetAbs:SetText(strsub(derString, 1, -7).."M")	
+		elseif #derString > 4 then
+			larthTargetAbs:SetText(strsub(derString, 1, -4).."k")
+		else
+			larthTargetAbs:SetText(derString)
+		end
 		local energy = UnitPower("target")
-		if( energy > 0 ) then targetPowerText:SetText(round(energy, 0))
-		else targetPowerText:SetText("") end
+		local powerMax = UnitPowerMax("target")
+		
+		if( energy > 0 ) then 
+			targetPowerText:SetText(round(energy, 0))
+			larthTargetPowerLong:SetText(longHealthString(100*energy/powerMax))
+		else 
+			targetPowerText:SetText("")
+		end
 		
 		local targetName = UnitName("target")
 		local class, classFileName = UnitClass("target")
@@ -288,7 +301,7 @@ end)
 
 larthPlayerFrame = CreateFrame("Button", "button_player", UIParent, "SecureActionButtonTemplate ");
 larthPlayerFrame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-larthPlayerFrame:SetWidth(200)
+larthPlayerFrame:SetWidth(250)
 larthPlayerFrame:SetHeight(50)
 larthPlayerFrame:SetPoint("CENTER", -250, 0)
 larthPlayerFrame:SetAttribute('type1', 'target')
@@ -299,14 +312,24 @@ larthPlayerFrame.menu = function(self, unit, button, actionType)
 	end
 	
 larthPlayerHealth = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
-larthPlayerHealth:SetPoint("RIGHT")
+larthPlayerHealth:SetPoint("LEFT")
 larthPlayerHealth:SetFont(fontset, 20, "OUTLINE")
 larthPlayerHealth:SetTextColor(1, 1, 1)
+
+larthPlayerHealthPercent = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
+larthPlayerHealthPercent:SetPoint("RIGHT")
+larthPlayerHealthPercent:SetFont(fontset, 20, "OUTLINE")
+larthPlayerHealthPercent:SetTextColor(1, 1, 1)
 
 larthPlayerPower = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
 larthPlayerPower:SetPoint("BOTTOMRIGHT")
 larthPlayerPower:SetFont(fontset, 14, "THINOUTLINE")
 larthPlayerPower:SetTextColor(1, 1, 1)
+
+larthPlayerPowerLong = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
+larthPlayerPowerLong:SetPoint("BOTTOMLEFT")
+larthPlayerPowerLong:SetFont(fontset, 14, "THINOUTLINE")
+larthPlayerPowerLong:SetTextColor(1, 1, 1)
 
 larthPlayerName = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
 larthPlayerName:SetPoint("TOPLEFT")
@@ -333,8 +356,19 @@ larthPlayerFrame:SetScript("OnUpdate", function(self, elapsed)
 	else
 		larthPlayerName:SetTextColor(1, 1, 1)
 	end
-	larthPlayerHealth:SetText(longHealthString(100*UnitHealth("player")/UnitHealthMax("player")))
+	local health = UnitHealth("player")
+	local maxHealth = UnitHealthMax("player")
+	local derString = ""..health
+	local percent = 100*health/maxHealth
+	larthPlayerHealthPercent:SetTextColor((1-percent/100)*2, percent/50, 0)
+	if #derString > 4 then
+		larthPlayerHealthPercent:SetText(strsub(derString, 1, -4).."k")
+	else
+		larthPlayerHealthPercent:SetText(derString)
+	end
+	larthPlayerHealth:SetText(longHealthString(percent))
 	larthPlayerPower:SetText(round(UnitPower("player"), 0))
+	larthPlayerPowerLong:SetText(longHealthString(100*UnitPower("player")/UnitPowerMax("player")))
 	local tempString = ""
 	if (classIndex == 6) then
 		for i=1, 6, 1 do
