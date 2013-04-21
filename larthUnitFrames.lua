@@ -83,11 +83,7 @@ end
 local larthUnitFrames = CreateFrame("Frame")
 
 larthUnitFrames:SetScript("OnUpdate", function(self, elapsed)
-		if not UnitExists("target") then 
-			larthTargetUnitFrame:Hide()
-		else 
-			larthTargetUnitFrame:Show()
-		end
+
 end)
 -- -----------------------------------------------------------------------------
 -- Register event
@@ -244,6 +240,8 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 		targetHealthText:SetText("")
 		targetNameText:SetText("")
 		targetPowerText:SetText("")
+		larthTargetAbs:SetText("")
+		larthTargetPowerLong:SetText("")
 	end
 	local debuffString = ""
 	if ( targetWatch ) then
@@ -419,3 +417,57 @@ larthClassSpecialText = larthClassSpecial:CreateFontString(nil, "OVERLAY")
 larthClassSpecialText:SetPoint("CENTER")
 larthClassSpecialText:SetFont(fontset, 20, "OUTLINE")
 larthClassSpecialText:SetTextColor(1, 1, 1)
+
+
+-- -----------------------------------------------------------------------------
+-- BossFrames
+-- -----------------------------------------------------------------------------
+
+
+
+for i = 1, 6, 1 do
+	
+	larthUnitFrame["boss"..i] = CreateFrame("Button", "button_boss"..i, UIParent, "SecureUnitButtonTemplate ");	
+	larthUnitFrame["boss"..i]:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	larthUnitFrame["boss"..i]:SetAttribute('type1', 'target')
+	larthUnitFrame["boss"..i]:SetAttribute('unit', "boss"..i)
+	larthUnitFrame["boss"..i]:SetWidth(100)
+	larthUnitFrame["boss"..i]:SetHeight(40)
+	larthUnitFrame["boss"..i]:Show()
+
+	larthUnitFrame["boss"..i]:SetPoint("RIGHT", -20, 100-i*50)
+	
+	larthUnitName["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
+	larthUnitName["boss"..i]:SetPoint("TOPLEFT")
+	larthUnitName["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+	larthUnitName["boss"..i]:SetTextColor(1, 1, 1)
+	
+	larthUnitHealth["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
+	larthUnitHealth["boss"..i]:SetPoint("BOTTOMLEFT")
+	larthUnitHealth["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+	larthUnitHealth["boss"..i]:SetTextColor(1, 0, 0)
+	
+	larthUnitPower["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
+	larthUnitPower["boss"..i]:SetPoint("BOTTOMRIGHT")
+	larthUnitPower["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+	larthUnitPower["boss"..i]:SetTextColor(0.5, 0.5, 1)
+	
+	
+	larthUnitFrame["boss"..i]:SetScript("OnUpdate", function(self, elapsed)
+		if UnitExists("boss"..i) then 
+			larthUnitName["boss"..i]:SetText(UnitName("boss"..i))
+			local health = UnitHealth("boss"..i)
+			local maxHealth = UnitHealthMax("boss"..i)
+			local percent = round(100*health/maxHealth, 0)
+			larthUnitHealth["boss"..i]:SetText(round(percent))
+			local power = UnitPower("boss"..i)
+			local maxPower = UnitPowerMax("boss"..i)
+			larthUnitPower["boss"..i]:SetText(round(100*power/maxPower))
+		else
+			larthUnitHealth["boss"..i]:SetText("")
+			larthUnitName["boss"..i]:SetText("")
+			larthUnitPower["boss"..i]:SetText("")
+		end
+	end)
+
+end
