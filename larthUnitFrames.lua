@@ -1,10 +1,25 @@
+local larthClasses = {}
+
+
+local lartUnitFrame = {}
+function lartUnitFrame:new()
+    local self  = {}
+    self.Aura   = {}
+	self.Text	= {}
+    self.Name   = ""
+    self.Class  = ""
+    self.Width  = 0
+    self.Height = 0
+    self.Position = ""
+    return self
+end
+
 -- -----------------------------------------------------------------------------
 -- Config
 -- -----------------------------------------------------------------------------
 
 local roguePlayerAuras = { {"Zerh\195\164ckseln", "ffff00"}, {"Vergiften", "00ff00"}, {"Schattenklingen", "ff00ff"} }
 local rogueTargetAuras = { {"Blutung", "ff0000"}, {"Vendetta", "ffffff"} }
-
 
 local dkPlayerAuras = { }
 local dkTargetAuras = { {"Frostfieber", "6666ff"}, {"Blutseuche", "00ff00"} }
@@ -101,10 +116,8 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
         TargetFrame:UnregisterAllEvents()
         ComboFrame:Hide()
         ComboFrame:UnregisterAllEvents()
-		health = UnitHealth("player")
-		maxHealth = UnitHealthMax("player")
 		if (classIndex == 10) then
-			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
+			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
 				local tempString = ""
 				local power = UnitPower("player" , 12);
 				if power > 0 then
@@ -112,14 +125,14 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 						tempString = tempString.."# "
 					end
 				end
-				larthClassSpecialText:SetText(tempString)
+				larthSpecial.Text:SetText(tempString)
 			end)
 		end
 		if (classIndex == 6) then
 			RuneFrame:UnregisterAllEvents()
 			RuneFrame:Hide()
 			targetWatch	=	dkTargetAuras
-			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
+			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
 			local tempString = "";
 			for i=1, 6, 1 do
 				
@@ -133,27 +146,27 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), cooldown.." ")
 				end
 			end
-			larthClassSpecialText:SetText(tempString)
+			larthSpecial.Text:SetText(tempString)
 			end)
 		end
 
 		if (classIndex == 4) then 
 			targetWatch = rogueTargetAuras
 			playerWatch = roguePlayerAuras
-			larthClassSpecial:SetScript("OnUpdate", function(self, elapsed)
+			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
 				local comboPoints = GetComboPoints("player", "target");
 				if ( comboPoints < 1 ) then
-					larthClassSpecialText:SetText("")
+					larthSpecial.Text:SetText("")
 				elseif (comboPoints < 2) then 
-					larthClassSpecialText:SetText("#")
+					larthSpecial.Text:SetText("#")
 				elseif (comboPoints < 3) then 
-					larthClassSpecialText:SetText("# #")
+					larthSpecial.Text:SetText("# #")
 				elseif (comboPoints < 4) then 
-					larthClassSpecialText:SetText(format("|cff%s%s|r", "ffff00", "# # #"))
+					larthSpecial.Text:SetText(format("|cff%s%s|r", "ffff00", "# # #"))
 				elseif (comboPoints < 5) then 
-					larthClassSpecialText:SetText(format("|cff%s%s|r", "ff9900", "# # # #"))
+					larthSpecial.Text:SetText(format("|cff%s%s|r", "ff9900", "# # # #"))
 				else
-					larthClassSpecialText:SetText(format("|cff%s%s|r", "ff0000", "# # # # #"))
+					larthSpecial.Text:SetText(format("|cff%s%s|r", "ff0000", "# # # # #"))
 				end
 
 			end)
@@ -166,16 +179,21 @@ end)
 -- -----------------------------------------------------------------------------
 -- Create Target frame
 -- -----------------------------------------------------------------------------
-
-larthTargetUnitFrame = CreateFrame("Button", "button_target", UIParent, "SecureActionButtonTemplate");
-larthTargetUnitFrame:RegisterForClicks("RightButtonUp")
+larthTargetUnitFrame = CreateFrame("Button", "larthTargetFrame", UIParent);
 larthTargetUnitFrame:SetWidth(250)
 larthTargetUnitFrame:SetHeight(50)
 larthTargetUnitFrame:SetPoint("CENTER", 250, 0)
+larthTargetUnitFrame:EnableMouse(false)
 
-larthTargetUnitFrame:SetAttribute('type2', 'menu')
-larthTargetUnitFrame.menu = function(self, unit, button, actionType) 
-		if UnitExists("target") then ToggleDropDownMenu(1, 1, TargetFrameDropDown, larthTargetUnitFrame, 0 ,0) end
+larthTargetUnitButton = CreateFrame("Button", "button_target", larthTargetUnitFrame, "SecureActionButtonTemplate");
+larthTargetUnitButton:RegisterForClicks("RightButtonUp")
+larthTargetUnitButton:SetWidth(50)
+larthTargetUnitButton:SetHeight(50)
+larthTargetUnitButton:SetPoint("LEFT", 0, 0)
+
+larthTargetUnitButton:SetAttribute('type2', 'menu')
+larthTargetUnitButton.menu = function(self, unit, button, actionType)
+		if UnitExists("target") then ToggleDropDownMenu(1, 1, TargetFrameDropDown, larthTargetUnitButton, 0 ,0) end
 	end
 	
 targetHealthText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
@@ -185,7 +203,7 @@ targetHealthText:SetTextColor(1, 1, 1)
 
 targetNameText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
 targetNameText:SetPoint("TOPRIGHT")
-targetNameText:SetFont(fontset, 14, "THINOUTLINE")
+targetNameText:SetFont(fontset, 18, "OUTLINE")
 targetNameText:SetTextColor(1, 1, 1)
 
 targetAuraText = larthTargetUnitFrame:CreateFontString(nil, "OVERLAY")
@@ -210,6 +228,15 @@ larthTargetPowerLong:SetTextColor(1, 1, 1)
 
 larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("target") then 
+		local spell, _, _, _, _, endTime = UnitCastingInfo("target")
+		if spell then 
+			local finish = endTime/1000 - GetTime()
+			targetNameText:SetText(round(finish).." - "..spell)
+		else
+			local targetName = UnitName("target")
+			local class, classFileName = UnitClass("target")
+			targetNameText:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), trimUnitName(targetName)))
+		end
 		local health = UnitHealth("target")
 		local maxHealth = UnitHealthMax("target")
 		local derString = ""..health
@@ -232,27 +259,26 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 		else 
 			targetPowerText:SetText("")
 		end
-		
-		local targetName = UnitName("target")
-		local class, classFileName = UnitClass("target")
-		targetNameText:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), trimUnitName(targetName)))
+		local debuffString = ""
+		if ( targetWatch ) then
+			for i=1, # targetWatch do
+				local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", targetWatch[i][1])
+				if(unitCaster=="player")then 
+					debuffString = debuffString..format("|cff%s%s|r", targetWatch[i][2], (round(expirationTime - GetTime()).." "))
+				end
+			end
+		end
+		targetAuraText:SetText(debuffString)		
 	else 
 		targetHealthText:SetText("")
 		targetNameText:SetText("")
 		targetPowerText:SetText("")
 		larthTargetAbs:SetText("")
 		larthTargetPowerLong:SetText("")
+		targetAuraText:SetText("")
 	end
-	local debuffString = ""
-	if ( targetWatch ) then
-		for i=1, # targetWatch do
-			local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", targetWatch[i][1])
-			if(unitCaster=="player")then 
-				debuffString = debuffString..format("|cff%s%s|r", targetWatch[i][2], (round(expirationTime - GetTime()).." "))
-			end
-		end
-	end
-	targetAuraText:SetText(debuffString)
+
+
 end)
 
 -- -----------------------------------------------------------------------------
@@ -263,17 +289,17 @@ larthTotButton = CreateFrame("Button", "button_tot", UIParent, "SecureActionButt
 larthTotButton:RegisterForClicks("LeftButtonUp")
 larthTotButton:SetWidth(100)
 larthTotButton:SetHeight(30)
-larthTotButton:SetPoint("CENTER", 400, 0)
+larthTotButton:SetPoint("CENTER", 450, 0)
 larthTotButton:SetAttribute('type1', 'target')
 larthTotButton:SetAttribute('unit', "targettarget")
 
 larthUnitName["targettarget"] = larthTotButton:CreateFontString(nil, "OVERLAY")
-larthUnitName["targettarget"]:SetPoint("TOPRIGHT")
+larthUnitName["targettarget"]:SetPoint("TOPLEFT")
 larthUnitName["targettarget"]:SetFont(fontset, 18, "OUTLINE")
 larthUnitName["targettarget"]:SetTextColor(1, 1, 1)
 
 larthUnitHealth["targettarget"] = larthTotButton:CreateFontString(nil, "OVERLAY")
-larthUnitHealth["targettarget"]:SetPoint("BOTTOMRIGHT")
+larthUnitHealth["targettarget"]:SetPoint("BOTTOMLEFT")
 larthUnitHealth["targettarget"]:SetFont(fontset, 18, "OUTLINE")
 larthUnitHealth["targettarget"]:SetTextColor(1, 1, 1)
 
@@ -291,132 +317,21 @@ larthTotButton:SetScript("OnUpdate", function(self, elapsed)
 end)
 
 
-
-
--- -----------------------------------------------------------------------------
--- Create Player frame
--- -----------------------------------------------------------------------------
-
-larthPlayerFrame = CreateFrame("Button", "button_player", UIParent, "SecureActionButtonTemplate ");
-larthPlayerFrame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-larthPlayerFrame:SetWidth(250)
-larthPlayerFrame:SetHeight(50)
-larthPlayerFrame:SetPoint("CENTER", -250, 0)
-larthPlayerFrame:SetAttribute('type1', 'target')
-larthPlayerFrame:SetAttribute('unit', "player")
-larthPlayerFrame:SetAttribute('type2', 'menu')
-larthPlayerFrame.menu = function(self, unit, button, actionType) 
-		ToggleDropDownMenu(1, 1, PlayerFrameDropDown, larthPlayerFrame, 0 ,0) 
-	end
-	
-larthPlayerHealth = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
-larthPlayerHealth:SetPoint("LEFT")
-larthPlayerHealth:SetFont(fontset, 20, "OUTLINE")
-larthPlayerHealth:SetTextColor(1, 1, 1)
-
-larthPlayerHealthPercent = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
-larthPlayerHealthPercent:SetPoint("RIGHT")
-larthPlayerHealthPercent:SetFont(fontset, 20, "OUTLINE")
-larthPlayerHealthPercent:SetTextColor(1, 1, 1)
-
-larthPlayerPower = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
-larthPlayerPower:SetPoint("BOTTOMRIGHT")
-larthPlayerPower:SetFont(fontset, 14, "THINOUTLINE")
-larthPlayerPower:SetTextColor(1, 1, 1)
-
-larthPlayerPowerLong = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
-larthPlayerPowerLong:SetPoint("BOTTOMLEFT")
-larthPlayerPowerLong:SetFont(fontset, 14, "THINOUTLINE")
-larthPlayerPowerLong:SetTextColor(1, 1, 1)
-
-larthPlayerName = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
-larthPlayerName:SetPoint("TOPLEFT")
-larthPlayerName:SetFont(fontset, 14, "THINOUTLINE")
-larthPlayerName:SetTextColor(1, 1, 1)
-
-
-playerSpecialText = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
-playerSpecialText:SetPoint("BOTTOMLEFT")
-playerSpecialText:SetFont(fontset, 14, "THINOUTLINE")
-playerSpecialText:SetTextColor(1, 1, 1)
-
-playerAuraText = larthPlayerFrame:CreateFontString(nil, "OVERLAY")
-playerAuraText:SetPoint("TOPRIGHT")
-playerAuraText:SetFont(fontset, 14, "THINOUTLINE")
-playerAuraText:SetTextColor(1, 1, 1)
-
-
-
-
-larthPlayerFrame:SetScript("OnUpdate", function(self, elapsed)
-	if UnitIsPVP("player") then
-		larthPlayerName:SetTextColor(1, 0, 0)
-	else
-		larthPlayerName:SetTextColor(1, 1, 1)
-	end
-	local health = UnitHealth("player")
-	local maxHealth = UnitHealthMax("player")
-	local derString = ""..health
-	local percent = 100*health/maxHealth
-	larthPlayerHealthPercent:SetTextColor((1-percent/100)*2, percent/50, 0)
-	if #derString > 4 then
-		larthPlayerHealthPercent:SetText(strsub(derString, 1, -4).."k")
-	else
-		larthPlayerHealthPercent:SetText(derString)
-	end
-	larthPlayerHealth:SetText(longHealthString(percent))
-	larthPlayerPower:SetText(round(UnitPower("player"), 0))
-	larthPlayerPowerLong:SetText(longHealthString(100*UnitPower("player")/UnitPowerMax("player")))
-	local tempString = ""
-	if (classIndex == 6) then
-		for i=1, 6, 1 do
-			local start, duration, runeReady = GetRuneCooldown(i)
-			runeType = GetRuneType(i)
-			if runeReady then
-				tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "#")
-			else
-				tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "_")
-			end
-		end
-		playerSpecialText:SetText(tempString)
-	end
-	
-
-	
-	local buffString = ""
-	if ( playerWatch) then
-		for i=1, # playerWatch do
-			local _, _, _, _, _, _, expirationTime, unitCaster = UnitBuff("player", playerWatch[i][1])
-			if(unitCaster=="player")then 
-				buffString = buffString..format("|cff%s%s|r", playerWatch[i][2], (round(expirationTime - GetTime()).." "))
-			end
-		end
-		playerAuraText:SetText(buffString)
-	end
-end)
-
-larthPlayerFrame:RegisterEvent("VARIABLES_LOADED")
-
-
-larthPlayerFrame:SetScript("OnEvent", function(self, event, ...)
-	larthPlayerName:SetText(trimUnitName(UnitName("player")))
-end)
-
-
 -- -----------------------------------------------------------------------------
 -- Create Special blah blah frame
 -- -----------------------------------------------------------------------------
-larthClassSpecial = CreateFrame("Frame", "larsClassSpecial", UIParent)
-larthClassSpecial:SetFrameLevel(3)
-larthClassSpecial:SetWidth(50)
-larthClassSpecial:SetHeight(50)
-larthClassSpecial:SetPoint("CENTER", 0, -100)
-larthClassSpecial:Show()
+larthSpecial = {}
+larthSpecial.Frame = CreateFrame("Frame", "larsClassSpecial", UIParent)
+larthSpecial.Frame:SetFrameLevel(3)
+larthSpecial.Frame:SetWidth(50)
+larthSpecial.Frame:SetHeight(50)
+larthSpecial.Frame:SetPoint("CENTER", 0, -100)
+larthSpecial.Frame:Show()
 
-larthClassSpecialText = larthClassSpecial:CreateFontString(nil, "OVERLAY")
-larthClassSpecialText:SetPoint("CENTER")
-larthClassSpecialText:SetFont(fontset, 20, "OUTLINE")
-larthClassSpecialText:SetTextColor(1, 1, 1)
+larthSpecial.Text = larthSpecial.Frame:CreateFontString(nil, "OVERLAY")
+larthSpecial.Text:SetPoint("CENTER")
+larthSpecial.Text:SetFont(fontset, 20, "OUTLINE")
+larthSpecial.Text:SetTextColor(1, 1, 1)
 
 
 -- -----------------------------------------------------------------------------
