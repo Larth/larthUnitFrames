@@ -15,13 +15,50 @@ local function longHealthString(health)
 	return derString
 end
 
+-- the font 
 local fontset = "Interface\\AddOns\\larthUnitFrames\\font.ttf"
-local playerWatch = { {"Vergiften", "00ff00"}, {"Schattenklingen", "ff00ff"}, {"Zerh\195\164ckseln", "ffff00"} }
 
+
+-- initialize player table
+local larthPlayer = {}
+
+
+-- set the health texts
+larthPlayer.setHealth = function ()
+	local health = UnitHealth("player")
+	local maxHealth = UnitHealthMax("player")
+	local percent = 100*health/maxHealth
+	if (percent < 100 and percent > 0) then
+		larthPlayer.Health:SetText(longHealthString(percent))
+		larthPlayer.HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
+		if health > 9999 then
+			larthPlayer.HealthAbs:SetText(round(health/1000).."k")
+		else
+			larthPlayer.HealthAbs:SetText(health)
+		end		
+	else
+		larthPlayer.Health:SetText("")
+		larthPlayer.HealthAbs:SetText("")
+	end
+end
+
+-- set the power texts
+larthPlayer.setPower = function()
+	local power = UnitPower("player")
+	local maxpower = UnitPowerMax("player")
+	local percent = 100*power/maxpower
+	if (percent < 100 and percent > 0) then
+		larthPlayer.PowerAbs:SetText(power)
+		larthPlayer.Power:SetText(longHealthString(percent))
+	else
+		larthPlayer.PowerAbs:SetText("")
+		larthPlayer.Power:SetText("")
+	end
+end
 -- -----------------------------------------------------------------------------
 -- Create Player frame
 -- -----------------------------------------------------------------------------
-local larthPlayer = {}
+
 larthPlayer.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent)
 larthPlayer.Frame:EnableMouse(false)
 larthPlayer.Frame:SetWidth(250)
@@ -31,8 +68,8 @@ larthPlayer.Frame:SetPoint("CENTER", -250, 0)
 larthPlayer.Button = CreateFrame("Button", "button_player", larthPlayer.Frame, "SecureActionButtonTemplate ");
 larthPlayer.Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 larthPlayer.Button:SetWidth(50)
-larthPlayer.Button:SetHeight(50)
-larthPlayer.Button:SetPoint("RIGHT", 0, 0)
+larthPlayer.Button:SetHeight(20)
+larthPlayer.Button:SetPoint("TOPLEFT", 0, 0)
 larthPlayer.Button:SetAttribute('type1', 'target')
 larthPlayer.Button:SetAttribute('unit', "player")
 larthPlayer.Button:SetAttribute('type2', 'menu')
@@ -79,45 +116,38 @@ larthPlayer.Frame:SetScript("OnUpdate", function(self, elapsed)
 	local spell, _, _, _, _, endTime = UnitCastingInfo("player")
 	if spell then 
 		local finish = endTime/1000 - GetTime()
-		larthPlayer.Name:SetText(spell.." - "..round(finish))
+		larthPlayer.Name:SetText(spell.." - "..round(finish, 1))
 	else
 		larthPlayer.Name:SetText(UnitName("player"))
-	end
-	if UnitIsPVP("player") then
-		larthPlayer.Name:SetTextColor(1, 0, 0)
-	else
-		larthPlayer.Name:SetTextColor(1, 1, 1)
-	end
-	local health = UnitHealth("player")
-	local maxHealth = UnitHealthMax("player")
-	local derString = ""..health
-	local percent = 100*health/maxHealth
-	larthPlayer.HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
-	if #derString > 4 then
-		larthPlayer.HealthAbs:SetText(strsub(derString, 1, -4).."k")
-	else
-		larthPlayer.HealthAbs:SetText(derString)
-	end
-	larthPlayer.Health:SetText(longHealthString(percent))
-	larthPlayer.PowerAbs:SetText(round(UnitPower("player"), 0))
-	larthPlayer.Power:SetText(longHealthString(100*UnitPower("player")/UnitPowerMax("player")))
-	local tempString = ""
-	
+	end	
 	local buffString = ""
-	if ( playerWatch) then
-		for i=1, # playerWatch do
-			local _, _, _, _, _, _, expirationTime, unitCaster = UnitBuff("player", playerWatch[i][1])
+	if ( larthPlayer.Watch) then
+		for i=1, # larthPlayer.Watch do
+			local _, _, _, _, _, _, expirationTime, unitCaster = UnitBuff("player", larthPlayer.Watch[i][1])
 			if(unitCaster=="player")then 
-				buffString = buffString..format("|cff%s%s|r", playerWatch[i][2], (round(expirationTime - GetTime()).." "))
+				buffString = buffString..format("|cff%s%s|r", larthPlayer.Watch[i][2], (round(expirationTime - GetTime()).." "))
 			end
 		end
 		larthPlayer.Aura:SetText(buffString)
 	end
 end)
 
-larthPlayer.Frame:RegisterEvent("VARIABLES_LOADED")
+larthPlayer.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+larthPlayer.Frame:RegisterEvent("UNIT_HEALTH_FREQUENT")
+larthPlayer.Frame:RegisterEvent("UNIT_POWER")
+
 
 
 larthPlayer.Frame:SetScript("OnEvent", function(self, event, ...)
-	larthPlayer.Name:SetText(UnitName("player"))
+	if (event == "UNIT_POWER") then
+		larthPlayer.setPower()
+	elseif (event == "UNIT_HEALTH_FREQUENT") then
+		larthPlayer.setHealth()
+	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
+		local localizedClass, englishClass, classIndex = UnitClass("player")
+		larthPlayer.Watch = LarthUnitFrames.Classes[englishClass].Buff
+		larthPlayer.Name:SetText(UnitName("player"))
+		larthPlayer.setHealth()
+		larthPlayer.setPower()
+	end
 end)

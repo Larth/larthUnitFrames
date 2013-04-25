@@ -1,5 +1,5 @@
 ## Interface: 50200
-## Version: 0.2.3
+## Version: 0.2.4
 ## Title: larthUnitFrames
 ## Notes: Text based Unit Frames
 ## Author: Larth

@@ -1,31 +1,23 @@
-local larthClasses = {}
+LarthUnitFrames = {
+	Classes = {
+		ROGUE = {
+			Buff = { {"Vergiften", "00ff00"}, {"Schattenklingen", "ff00ff"}, {"Zerh\195\164ckseln", "ffff00"} },
+			Debuff = { {"Blutung", "ff0000"}, {"Vendetta", "ffffff"}, {"Blutroter Sturm", "ff9999"} }
+		},
+		DEATHKNIGHT = {
+			Buff = { {"Horn des Winters", "0099ff"}, {"Schattenklingen", "ff00ff"}, {"Zerh\195\164ckseln", "ffff00"} },
+			Debuff = { {"Frostfieber", "6666ff"}, {"Blutseuche", "00ff00"} }
+		}
+	}
+}
 
-
-local lartUnitFrame = {}
-function lartUnitFrame:new()
-    local self  = {}
-    self.Aura   = {}
-	self.Text	= {}
-    self.Name   = ""
-    self.Class  = ""
-    self.Width  = 0
-    self.Height = 0
-    self.Position = ""
-    return self
-end
 
 -- -----------------------------------------------------------------------------
 -- Config
 -- -----------------------------------------------------------------------------
 
-local roguePlayerAuras = { {"Zerh\195\164ckseln", "ffff00"}, {"Vergiften", "00ff00"}, {"Schattenklingen", "ff00ff"} }
-local rogueTargetAuras = { {"Blutung", "ff0000"}, {"Vendetta", "ffffff"} }
-
-local dkPlayerAuras = { }
+local rogueTargetAuras = { {"Blutung", "ff0000"}, {"Vendetta", "ffffff"}, {"Blutroter Sturm", "ff9999"}}
 local dkTargetAuras = { {"Frostfieber", "6666ff"}, {"Blutseuche", "00ff00"} }
-
-local priestPlayerAuras = { {"Machtwort: Schild", "ffffff"} }
-local priestTargetAuras = { {"Machtwort: Schild", "ffffff"} }
 
 
 
@@ -109,7 +101,9 @@ larthUnitFrames:RegisterEvent("VARIABLES_LOADED")
 larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 	local unit = ...
 	if (event == "VARIABLES_LOADED") then
+		SpellActivationOverlayFrame:SetScale(0.6);
 		local localizedClass, englishClass, classIndex = UnitClass("player")
+		targetWatch = LarthUnitFrames.Classes[englishClass].Debuff
 		PlayerFrame:Hide()
         PlayerFrame:UnregisterAllEvents()
         TargetFrame:Hide()
@@ -131,11 +125,9 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 		if (classIndex == 6) then
 			RuneFrame:UnregisterAllEvents()
 			RuneFrame:Hide()
-			targetWatch	=	dkTargetAuras
 			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
 			local tempString = "";
-			for i=1, 6, 1 do
-				
+			for i=1, 6, 1 do				
 				local start, duration, runeReady = GetRuneCooldown(i)
 				runeType = GetRuneType(i)
 				local cooldown = round(duration-GetTime()+start)
@@ -151,8 +143,6 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 		end
 
 		if (classIndex == 4) then 
-			targetWatch = rogueTargetAuras
-			playerWatch = roguePlayerAuras
 			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
 				local comboPoints = GetComboPoints("player", "target");
 				if ( comboPoints < 1 ) then
@@ -188,8 +178,8 @@ larthTargetUnitFrame:EnableMouse(false)
 larthTargetUnitButton = CreateFrame("Button", "button_target", larthTargetUnitFrame, "SecureActionButtonTemplate");
 larthTargetUnitButton:RegisterForClicks("RightButtonUp")
 larthTargetUnitButton:SetWidth(50)
-larthTargetUnitButton:SetHeight(50)
-larthTargetUnitButton:SetPoint("LEFT", 0, 0)
+larthTargetUnitButton:SetHeight(20)
+larthTargetUnitButton:SetPoint("TOPRIGHT", 0, 0)
 
 larthTargetUnitButton:SetAttribute('type2', 'menu')
 larthTargetUnitButton.menu = function(self, unit, button, actionType)
@@ -231,7 +221,7 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 		local spell, _, _, _, _, endTime = UnitCastingInfo("target")
 		if spell then 
 			local finish = endTime/1000 - GetTime()
-			targetNameText:SetText(round(finish).." - "..spell)
+			targetNameText:SetText(round(finish, 1).." - "..spell)
 		else
 			local targetName = UnitName("target")
 			local class, classFileName = UnitClass("target")
@@ -239,16 +229,15 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 		end
 		local health = UnitHealth("target")
 		local maxHealth = UnitHealthMax("target")
-		local derString = ""..health
 		local percent = 100*health/maxHealth
 		targetHealthText:SetText(longHealthString(percent))
 		larthTargetAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
-		if #derString > 7 then
-			larthTargetAbs:SetText(strsub(derString, 1, -7).."M")	
-		elseif #derString > 4 then
-			larthTargetAbs:SetText(strsub(derString, 1, -4).."k")
+		if health > 1000000 then
+			larthTargetAbs:SetText(round(health/1000000).."M")	
+		elseif health > 1000 then
+			larthTargetAbs:SetText(round(health/1000).."k")
 		else
-			larthTargetAbs:SetText(derString)
+			larthTargetAbs:SetText(health)
 		end
 		local energy = UnitPower("target")
 		local powerMax = UnitPowerMax("target")
@@ -337,34 +326,42 @@ larthSpecial.Text:SetTextColor(1, 1, 1)
 -- -----------------------------------------------------------------------------
 -- BossFrames
 -- -----------------------------------------------------------------------------
+Boss1TargetFrame:UnregisterAllEvents()
+Boss1TargetFrame:Hide()
+Boss2TargetFrame:UnregisterAllEvents()
+Boss2TargetFrame:Hide()
+Boss3TargetFrame:UnregisterAllEvents()
+Boss3TargetFrame:Hide()
+Boss4TargetFrame:UnregisterAllEvents()
+Boss4TargetFrame:Hide()
+Boss5TargetFrame:UnregisterAllEvents()
+Boss5TargetFrame:Hide()
 
-
-
-for i = 1, 6, 1 do
+for i = 1, 5, 1 do
 	
 	larthUnitFrame["boss"..i] = CreateFrame("Button", "button_boss"..i, UIParent, "SecureUnitButtonTemplate ");	
 	larthUnitFrame["boss"..i]:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	larthUnitFrame["boss"..i]:SetAttribute('type1', 'target')
 	larthUnitFrame["boss"..i]:SetAttribute('unit', "boss"..i)
-	larthUnitFrame["boss"..i]:SetWidth(100)
+	larthUnitFrame["boss"..i]:SetWidth(50)
 	larthUnitFrame["boss"..i]:SetHeight(40)
 	larthUnitFrame["boss"..i]:Show()
 
 	larthUnitFrame["boss"..i]:SetPoint("RIGHT", -20, 100-i*50)
 	
 	larthUnitName["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
-	larthUnitName["boss"..i]:SetPoint("TOPLEFT")
-	larthUnitName["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+	larthUnitName["boss"..i]:SetPoint("TOPRIGHT")
+	larthUnitName["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
 	larthUnitName["boss"..i]:SetTextColor(1, 1, 1)
 	
 	larthUnitHealth["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
 	larthUnitHealth["boss"..i]:SetPoint("BOTTOMLEFT")
-	larthUnitHealth["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+	larthUnitHealth["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
 	larthUnitHealth["boss"..i]:SetTextColor(1, 0, 0)
 	
 	larthUnitPower["boss"..i] = larthUnitFrame["boss"..i]:CreateFontString(nil, "OVERLAY")
 	larthUnitPower["boss"..i]:SetPoint("BOTTOMRIGHT")
-	larthUnitPower["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 14, "THINOUTLINE")
+	larthUnitPower["boss"..i]:SetFont("Interface\\AddOns\\larthUnitFrames\\font.ttf", 20, "OUTLINE")
 	larthUnitPower["boss"..i]:SetTextColor(0.5, 0.5, 1)
 	
 	
