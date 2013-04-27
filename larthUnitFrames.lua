@@ -1,3 +1,5 @@
+-- I'm playing with the German client. If you're not, well, I don't really care.
+
 LarthUnitFrames = {
 	Classes = {
 		ROGUE = {
@@ -7,18 +9,57 @@ LarthUnitFrames = {
 		DEATHKNIGHT = {
 			Buff = { {"Horn des Winters", "0099ff"}, {"Schattenklingen", "ff00ff"}, {"Zerh\195\164ckseln", "ffff00"} },
 			Debuff = { {"Frostfieber", "6666ff"}, {"Blutseuche", "00ff00"} }
+		},
+		PALADIN = {
+			Buff = { {"Inquisition", "ff9900"} },
+			Debuff = {  },
+			Special = 9
 		}
 	}
 }
+LarthUnitFrames.font = "Interface\\AddOns\\larthUnitFrames\\font.ttf"
+LarthUnitFrames.round = function(number, decimals)
+	return tonumber((("%%.%df"):format(decimals)):format(number))
+end
 
+LarthUnitFrames.textBar = function(health)
+	local derString = ""
+	local lifef = LarthUnitFrames.round(health, 0)
+	for i=0, 100, 10 do
+		if lifef >= i and lifef < i+10 then
+			derString = derString..format("|cff%s%s|r", "ff0000", lifef)
+		else
+			derString = derString..i
+		end
+	end
+	return derString
+end
 
--- -----------------------------------------------------------------------------
--- Config
--- -----------------------------------------------------------------------------
-
-local rogueTargetAuras = { {"Blutung", "ff0000"}, {"Vendetta", "ffffff"}, {"Blutroter Sturm", "ff9999"}}
-local dkTargetAuras = { {"Frostfieber", "6666ff"}, {"Blutseuche", "00ff00"} }
-
+-- set the health texts
+-- I believe this code is never used!
+LarthUnitFrames.setHealthPercent = function (unit)
+	local health = UnitHealth(unit)
+	local maxHealth = UnitHealthMax(unit)
+	local percent = 100*health/maxHealth
+	LarthUnitFrames[unit].HealthPercent:SetText(LarthUnitFrames.round(percent))
+	LarthUnitFrames[unit].HealthPercent:SetTextColor((1-percent/100)*2, percent/50, 0)
+end
+LarthUnitFrames.setHealthBar = function (unit)
+	local health = UnitHealth(unit)
+	local maxHealth = UnitHealthMax(unit)
+	local percent = 100*health/maxHealth
+	LarthUnitFrames[unit].HealthBar:SetText(LarthUnitFrames.textBar(percent))
+end
+LarthUnitFrames.setHealthAbsolut = function (unit)
+	local health = UnitHealth(unit)
+	if(health > 5000000) then
+		LarthUnitFrames[unit].HealthAbsolut:SetText(round(health/100000).."M")
+	elseif(health > 9999) then
+		LarthUnitFrames[unit].HealthAbsolut:SetText(round(health/1000).."k")
+	else
+		LarthUnitFrames[unit].HealthAbsolut:SetText(health)
+	end
+end
 
 
 -- -----------------------------------------------------------------------------
@@ -32,28 +73,6 @@ local larthUnitPower = { }
 local larthUnitButton = { }
 
 local fontset = "Interface\\AddOns\\larthUnitFrames\\font.ttf"
-	
-local function round(number, decimals)
-    return tonumber((("%%.%df"):format(decimals)):format(number))
-end
-
-
--- -----------------------------------------------------------------------------
--- Generate the health strings for player and target.
--- -----------------------------------------------------------------------------
-local function longHealthString(health)
-	local derString = ""
-	local lifef = round(health, 0)
-	for i=0, 100, 10 do
-		if lifef >= i and lifef < i+10 then
-			derString = derString..format("|cff%s%s|r", "ff0000", lifef)
-		else
-			derString = derString..i
-		end
-	end
-	return derString
-end
-
 
 local function trimUnitName(unitName)
 	local derString = ""
@@ -101,8 +120,11 @@ larthUnitFrames:RegisterEvent("VARIABLES_LOADED")
 larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 	local unit = ...
 	if (event == "VARIABLES_LOADED") then
+		-- make those proc indikaters fit between player and target frames
 		SpellActivationOverlayFrame:SetScale(0.6);
 		local localizedClass, englishClass, classIndex = UnitClass("player")
+		
+		-- hide the blizzard frames
 		targetWatch = LarthUnitFrames.Classes[englishClass].Debuff
 		PlayerFrame:Hide()
         PlayerFrame:UnregisterAllEvents()
@@ -110,6 +132,24 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
         TargetFrame:UnregisterAllEvents()
         ComboFrame:Hide()
         ComboFrame:UnregisterAllEvents()
+		RuneFrame:UnregisterAllEvents()
+		RuneFrame:Hide()
+		
+		-- holy power, chi (hopefully)
+		if (LarthUnitFrames.Classes[englishClass].Special) then
+			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
+				local tempString = ""
+				local power = UnitPower("player" , LarthUnitFrames.Classes[englishClass].Special);
+				if power > 0 then
+					for i = 1, power, 1 do
+						tempString = tempString.."# "
+					end
+				end
+				larthSpecial.Text:SetText(tempString)
+			end)
+		end
+		
+		-- some bad code here
 		if (classIndex == 10) then
 			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
 				local tempString = ""
@@ -123,15 +163,15 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 			end)
 		end
 		if (classIndex == 6) then
-			RuneFrame:UnregisterAllEvents()
-			RuneFrame:Hide()
 			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
 			local tempString = "";
 			for i=1, 6, 1 do				
 				local start, duration, runeReady = GetRuneCooldown(i)
 				runeType = GetRuneType(i)
-				local cooldown = round(duration-GetTime()+start)
-				--(round(expirationTime - GetTime())
+				local cooldown = LarthUnitFrames.round(duration-GetTime()+start)
+				if cooldown > 9 or cooldown < 0 then
+					cooldown = "_"
+				end
 				if runeReady then
 					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "# ")
 				else
@@ -158,7 +198,6 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 				else
 					larthSpecial.Text:SetText(format("|cff%s%s|r", "ff0000", "# # # # #"))
 				end
-
 			end)
 		end
 	end
@@ -221,7 +260,7 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 		local spell, _, _, _, _, endTime = UnitCastingInfo("target")
 		if spell then 
 			local finish = endTime/1000 - GetTime()
-			targetNameText:SetText(round(finish, 1).." - "..spell)
+			targetNameText:SetText(LarthUnitFrames.round(finish, 1).." - "..spell)
 		else
 			local targetName = UnitName("target")
 			local class, classFileName = UnitClass("target")
@@ -230,12 +269,12 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 		local health = UnitHealth("target")
 		local maxHealth = UnitHealthMax("target")
 		local percent = 100*health/maxHealth
-		targetHealthText:SetText(longHealthString(percent))
+		targetHealthText:SetText(LarthUnitFrames.textBar(percent))
 		larthTargetAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
 		if health > 1000000 then
-			larthTargetAbs:SetText(round(health/1000000).."M")	
+			larthTargetAbs:SetText(LarthUnitFrames.round(health/1000000).."M")	
 		elseif health > 1000 then
-			larthTargetAbs:SetText(round(health/1000).."k")
+			larthTargetAbs:SetText(LarthUnitFrames.round(health/1000).."k")
 		else
 			larthTargetAbs:SetText(health)
 		end
@@ -243,8 +282,8 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 		local powerMax = UnitPowerMax("target")
 		
 		if( energy > 0 ) then 
-			targetPowerText:SetText(round(energy, 0))
-			larthTargetPowerLong:SetText(longHealthString(100*energy/powerMax))
+			targetPowerText:SetText(LarthUnitFrames.round(energy, 0))
+			larthTargetPowerLong:SetText(LarthUnitFrames.textBar(100*energy/powerMax))
 		else 
 			targetPowerText:SetText("")
 		end
@@ -253,7 +292,7 @@ larthTargetUnitFrame:SetScript("OnUpdate", function(self, elapsed)
 			for i=1, # targetWatch do
 				local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", targetWatch[i][1])
 				if(unitCaster=="player")then 
-					debuffString = debuffString..format("|cff%s%s|r", targetWatch[i][2], (round(expirationTime - GetTime()).." "))
+					debuffString = debuffString..format("|cff%s%s|r", targetWatch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
 				end
 			end
 		end
@@ -296,7 +335,7 @@ larthTotButton:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("targettarget") then 
 		local health = UnitHealth("targettarget")
 		local maxHealth = UnitHealthMax("targettarget")
-		larthUnitHealth["targettarget"]:SetText(round(100*health/maxHealth, 0))
+		larthUnitHealth["targettarget"]:SetText(LarthUnitFrames.round(100*health/maxHealth, 0))
 		local class, classFileName = UnitClass("targettarget")
 		larthUnitName["targettarget"]:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), trimUnitName(UnitName("targettarget"))))
 	else
@@ -370,11 +409,11 @@ for i = 1, 5, 1 do
 			larthUnitName["boss"..i]:SetText(UnitName("boss"..i))
 			local health = UnitHealth("boss"..i)
 			local maxHealth = UnitHealthMax("boss"..i)
-			local percent = round(100*health/maxHealth, 0)
-			larthUnitHealth["boss"..i]:SetText(round(percent))
+			local percent = LarthUnitFrames.round(100*health/maxHealth, 0)
+			larthUnitHealth["boss"..i]:SetText(LarthUnitFrames.round(percent))
 			local power = UnitPower("boss"..i)
 			local maxPower = UnitPowerMax("boss"..i)
-			larthUnitPower["boss"..i]:SetText(round(100*power/maxPower))
+			larthUnitPower["boss"..i]:SetText(LarthUnitFrames.round(100*power/maxPower))
 		else
 			larthUnitHealth["boss"..i]:SetText("")
 			larthUnitName["boss"..i]:SetText("")
