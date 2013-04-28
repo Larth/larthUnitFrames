@@ -24,9 +24,6 @@ LarthUnitFrames.player.setPower = function()
 	LarthUnitFrames.player.Power:SetText(LarthUnitFrames.textBar(percent))
 
 end
--- -----------------------------------------------------------------------------
--- Create player frame
--- -----------------------------------------------------------------------------
 
 LarthUnitFrames.player.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent)
 LarthUnitFrames.player.Frame:EnableMouse(false)
@@ -47,37 +44,12 @@ LarthUnitFrames.player.Button.menu = function(self, unit, button, actionType)
 	end
 
 -- this code is so copy/paste	
-LarthUnitFrames.player.Health = LarthUnitFrames.player.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.player.Health:SetPoint("LEFT")
-LarthUnitFrames.player.Health:SetFont(LarthUnitFrames.font, 20, "OUTLINE")
-LarthUnitFrames.player.Health:SetTextColor(1, 1, 1)
-
-LarthUnitFrames.player.HealthAbs = LarthUnitFrames.player.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.player.HealthAbs:SetPoint("RIGHT")
-LarthUnitFrames.player.HealthAbs:SetFont(LarthUnitFrames.font, 20, "OUTLINE")
-LarthUnitFrames.player.HealthAbs:SetTextColor(1, 1, 1)
-
-LarthUnitFrames.player.PowerAbs = LarthUnitFrames.player.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.player.PowerAbs:SetPoint("BOTTOMRIGHT")
-LarthUnitFrames.player.PowerAbs:SetFont(LarthUnitFrames.font, 14, "THINOUTLINE")
-LarthUnitFrames.player.PowerAbs:SetTextColor(1, 1, 1)
-
-LarthUnitFrames.player.Power = LarthUnitFrames.player.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.player.Power:SetPoint("BOTTOMLEFT")
-LarthUnitFrames.player.Power:SetFont(LarthUnitFrames.font, 14, "THINOUTLINE")
-LarthUnitFrames.player.Power:SetTextColor(1, 1, 1)
-
-LarthUnitFrames.player.Name = LarthUnitFrames.player.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.player.Name:SetPoint("TOPLEFT")
-LarthUnitFrames.player.Name:SetFont(LarthUnitFrames.font, 18, "OUTLINE")
-LarthUnitFrames.player.Name:SetTextColor(1, 1, 1)
-
-
-LarthUnitFrames.player.Aura = LarthUnitFrames.player.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.player.Aura:SetPoint("TOPRIGHT")
-LarthUnitFrames.player.Aura:SetFont(LarthUnitFrames.font, 14, "THINOUTLINE")
-LarthUnitFrames.player.Aura:SetTextColor(1, 1, 1)
-
+LarthUnitFrames.setText("player", "Health", "LEFT", 20)
+LarthUnitFrames.setText("player", "HealthAbs", "RIGHT", 20)
+LarthUnitFrames.setText("player", "PowerAbs", "BOTTOMRIGHT", 14)
+LarthUnitFrames.setText("player", "Power", "BOTTOMLEFT", 14)
+LarthUnitFrames.setText("player", "Name", "TOPLEFT", 18)
+LarthUnitFrames.setText("player", "Aura", "TOPRIGHT", 14)
 
 
 

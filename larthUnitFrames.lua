@@ -32,6 +32,7 @@ LarthUnitFrames = {
 	}
 }
 LarthUnitFrames.font = "Interface\\AddOns\\larthUnitFrames\\font.ttf"
+
 LarthUnitFrames.round = function(number, decimals)
 	return tonumber((("%%.%df"):format(decimals)):format(number))
 end
@@ -49,44 +50,13 @@ LarthUnitFrames.textBar = function(health)
 	return derString
 end
 
--- set the health texts
--- I believe this code is never used!
-LarthUnitFrames.setHealthPercent = function (unit)
-	local health = UnitHealth(unit)
-	local maxHealth = UnitHealthMax(unit)
-	local percent = 100*health/maxHealth
-	LarthUnitFrames[unit].HealthPercent:SetText(LarthUnitFrames.round(percent))
-	LarthUnitFrames[unit].HealthPercent:SetTextColor((1-percent/100)*2, percent/50, 0)
-end
-LarthUnitFrames.setHealthBar = function (unit)
-	local health = UnitHealth(unit)
-	local maxHealth = UnitHealthMax(unit)
-	local percent = 100*health/maxHealth
-	LarthUnitFrames[unit].HealthBar:SetText(LarthUnitFrames.textBar(percent))
-end
-LarthUnitFrames.setHealthAbsolut = function (unit)
-	local health = UnitHealth(unit)
-	if(health > 5000000) then
-		LarthUnitFrames[unit].HealthAbsolut:SetText(round(health/100000).."M")
-	elseif(health > 9999) then
-		LarthUnitFrames[unit].HealthAbsolut:SetText(round(health/1000).."k")
-	else
-		LarthUnitFrames[unit].HealthAbsolut:SetText(health)
-	end
+LarthUnitFrames.setText = function (unit, text, position, size)
+	LarthUnitFrames[unit][text] = LarthUnitFrames[unit].Frame:CreateFontString(nil, "OVERLAY")
+	LarthUnitFrames[unit][text]:SetPoint(position)
+	LarthUnitFrames[unit][text]:SetFont(LarthUnitFrames.font, size, "OUTLINE")
+	LarthUnitFrames[unit][text]:SetTextColor(1, 1, 1)
 end
 
-
--- -----------------------------------------------------------------------------
--- Variables
--- -----------------------------------------------------------------------------
-local targetWatch, playerWatch 
-local larthUnitFrame = { }
-local larthUnitName = { }
-local larthUnitHealth = { }
-local larthUnitPower = { }
-local larthUnitButton = { }
-
-local fontset = "Interface\\AddOns\\larthUnitFrames\\font.ttf"
 
 local function trimUnitName(unitName)
 	local derString = ""
@@ -116,22 +86,13 @@ local function runeColoring(runeType)
 	end
 	return derString
 end
--- -----------------------------------------------------------------------------
--- Create addon frame
--- -----------------------------------------------------------------------------
-
-local larthUnitFrames = CreateFrame("Frame")
-
-larthUnitFrames:SetScript("OnUpdate", function(self, elapsed)
-
-end)
--- -----------------------------------------------------------------------------
--- Register event
--- -----------------------------------------------------------------------------
-larthUnitFrames:RegisterEvent("VARIABLES_LOADED")
 
 
-larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
+LarthUnitFrames.Start = CreateFrame("Frame")
+
+LarthUnitFrames.Start:RegisterEvent("VARIABLES_LOADED")
+
+LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 	local unit = ...
 	if (event == "VARIABLES_LOADED") then
 		-- make those proc indikaters fit between player and target frames
@@ -139,7 +100,6 @@ larthUnitFrames:SetScript("OnEvent", function(self, event, ...)
 		local localizedClass, englishClass, classIndex = UnitClass("player")
 		
 		-- hide the blizzard frames
-		targetWatch = LarthUnitFrames.Classes[englishClass].Debuff
 		PlayerFrame:Hide()
         PlayerFrame:UnregisterAllEvents()
         TargetFrame:Hide()
@@ -209,34 +169,30 @@ end)
 -- Create Target of Target frame
 -- -----------------------------------------------------------------------------
 
-larthTotButton = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
-larthTotButton:RegisterForClicks("LeftButtonUp")
-larthTotButton:SetWidth(100)
-larthTotButton:SetHeight(30)
-larthTotButton:SetPoint("CENTER", 450, 0)
-larthTotButton:SetAttribute('type1', 'target')
-larthTotButton:SetAttribute('unit', "targettarget")
+LarthUnitFrames.targettarget = {}
+LarthUnitFrames.targettarget.Frame = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
+LarthUnitFrames.targettarget.Frame:RegisterForClicks("LeftButtonUp")
+LarthUnitFrames.targettarget.Frame:SetWidth(100)
+LarthUnitFrames.targettarget.Frame:SetHeight(30)
+LarthUnitFrames.targettarget.Frame:SetPoint("CENTER", 450, 0)
+LarthUnitFrames.targettarget.Frame:SetAttribute('type1', 'target')
+LarthUnitFrames.targettarget.Frame:SetAttribute('unit', "targettarget")
 
-larthUnitName["targettarget"] = larthTotButton:CreateFontString(nil, "OVERLAY")
-larthUnitName["targettarget"]:SetPoint("TOPLEFT")
-larthUnitName["targettarget"]:SetFont(fontset, 18, "OUTLINE")
-larthUnitName["targettarget"]:SetTextColor(1, 1, 1)
+LarthUnitFrames.setText("targettarget", "Name", "TOPLEFT", 18)
+LarthUnitFrames.setText("targettarget", "Health", "BOTTOMLEFT", 18)
 
-larthUnitHealth["targettarget"] = larthTotButton:CreateFontString(nil, "OVERLAY")
-larthUnitHealth["targettarget"]:SetPoint("BOTTOMLEFT")
-larthUnitHealth["targettarget"]:SetFont(fontset, 18, "OUTLINE")
-larthUnitHealth["targettarget"]:SetTextColor(1, 1, 1)
 
-larthTotButton:SetScript("OnUpdate", function(self, elapsed)
+LarthUnitFrames.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("targettarget") then 
 		local health = UnitHealth("targettarget")
 		local maxHealth = UnitHealthMax("targettarget")
-		larthUnitHealth["targettarget"]:SetText(LarthUnitFrames.round(100*health/maxHealth, 0))
+		LarthUnitFrames.targettarget.Health:SetText(LarthUnitFrames.round(100*health/maxHealth, 0))
 		local class, classFileName = UnitClass("targettarget")
-		larthUnitName["targettarget"]:SetText(format("|cff%s%s|r", strsub(RAID_CLASS_COLORS[classFileName].colorStr, 3, 8), trimUnitName(UnitName("targettarget"))))
+		local color = RAID_CLASS_COLORS[classFileName]
+		LarthUnitFrames.targettarget.Name:SetText(format("|cff%s%s|r", strsub(color.colorStr, 3, 8), trimUnitName(UnitName("targettarget"))))
 	else
-		larthUnitName["targettarget"]:SetText("")
-		larthUnitHealth["targettarget"]:SetText("")
+		LarthUnitFrames.targettarget.Name:SetText("")
+		LarthUnitFrames.targettarget.Health:SetText("")
 	end
 end)
 
@@ -254,22 +210,5 @@ larthSpecial.Frame:Show()
 
 larthSpecial.Text = larthSpecial.Frame:CreateFontString(nil, "OVERLAY")
 larthSpecial.Text:SetPoint("CENTER")
-larthSpecial.Text:SetFont(fontset, 20, "OUTLINE")
+larthSpecial.Text:SetFont(LarthUnitFrames.font, 20, "OUTLINE")
 larthSpecial.Text:SetTextColor(1, 1, 1)
-
-
--- -----------------------------------------------------------------------------
--- Missing Buffs Frame
--- -----------------------------------------------------------------------------
-
--- LarthUnitFrames.Missing = CreateFrame("Frame", "larthMissing", UIParent)
--- LarthUnitFrames.Missing:SetFrameLevel(3)
--- LarthUnitFrames.Missing:SetWidth(10)
--- LarthUnitFrames.Missing:SetHeight(10)
--- LarthUnitFrames.Missing:SetPoint("CENTER", 0, 0)
--- LarthUnitFrames.Missing:Show()
-
--- LarthUnitFrames.Missing.Text = LarthUnitFrames.Missing:CreateFontString(nil, "OVERLAY")
--- LarthUnitFrames.Missing.Text:SetPoint("CENTER")
--- LarthUnitFrames.Missing.Text:SetFont(fontset, 18, "OUTLINE")
--- LarthUnitFrames.Missing.Text:SetTextColor(1, 1, 1)

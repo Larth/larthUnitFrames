@@ -24,9 +24,6 @@ LarthUnitFrames.target.setPower = function()
 	LarthUnitFrames.target.Power:SetText(LarthUnitFrames.textBar(percent))
 end
 
--- -----------------------------------------------------------------------------
--- Create target frame
--- -----------------------------------------------------------------------------
 
 LarthUnitFrames.target.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent)
 LarthUnitFrames.target.Frame:EnableMouse(false)
@@ -47,38 +44,13 @@ LarthUnitFrames.target.Button.menu = function(self, unit, button, actionType)
 	end
 
 -- this code is so copy/paste	
-LarthUnitFrames.target.Health = LarthUnitFrames.target.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.target.Health:SetPoint("RIGHT")
-LarthUnitFrames.target.Health:SetFont(LarthUnitFrames.font, 20, "OUTLINE")
-LarthUnitFrames.target.Health:SetTextColor(1, 1, 1)
 
-LarthUnitFrames.target.HealthAbs = LarthUnitFrames.target.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.target.HealthAbs:SetPoint("LEFT")
-LarthUnitFrames.target.HealthAbs:SetFont(LarthUnitFrames.font, 20, "OUTLINE")
-LarthUnitFrames.target.HealthAbs:SetTextColor(1, 1, 1)
-
-LarthUnitFrames.target.PowerAbs = LarthUnitFrames.target.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.target.PowerAbs:SetPoint("BOTTOMLEFT")
-LarthUnitFrames.target.PowerAbs:SetFont(LarthUnitFrames.font, 14, "THINOUTLINE")
-LarthUnitFrames.target.PowerAbs:SetTextColor(1, 1, 1)
-
-LarthUnitFrames.target.Power = LarthUnitFrames.target.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.target.Power:SetPoint("BOTTOMRIGHT")
-LarthUnitFrames.target.Power:SetFont(LarthUnitFrames.font, 14, "THINOUTLINE")
-LarthUnitFrames.target.Power:SetTextColor(1, 1, 1)
-
-LarthUnitFrames.target.Name = LarthUnitFrames.target.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.target.Name:SetPoint("TOPRIGHT")
-LarthUnitFrames.target.Name:SetFont(LarthUnitFrames.font, 18, "OUTLINE")
-LarthUnitFrames.target.Name:SetTextColor(1, 1, 1)
-
-
-LarthUnitFrames.target.Aura = LarthUnitFrames.target.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.target.Aura:SetPoint("TOPLEFT")
-LarthUnitFrames.target.Aura:SetFont(LarthUnitFrames.font, 14, "THINOUTLINE")
-LarthUnitFrames.target.Aura:SetTextColor(1, 1, 1)
-
-
+LarthUnitFrames.setText("target", "Health", "RIGHT", 20)
+LarthUnitFrames.setText("target", "HealthAbs", "LEFT", 20)
+LarthUnitFrames.setText("target", "PowerAbs", "BOTTOMLEFT", 14)
+LarthUnitFrames.setText("target", "Power", "BOTTOMRIGHT", 14)
+LarthUnitFrames.setText("target", "Name", "TOPRIGHT", 18)
+LarthUnitFrames.setText("target", "Aura", "TOPLEFT", 14)
 
 
 -- show durations of the important buffs/debuffs specified somewhere else
@@ -117,8 +89,11 @@ LarthUnitFrames.target.Frame:SetScript("OnEvent", function(self, event, ...)
 		elseif (event == "UNIT_HEALTH_FREQUENT") then
 			LarthUnitFrames.target.setHealth()
 		elseif ( event == "PLAYER_TARGET_CHANGED" ) then
-			local localizedClass, englishClass, classIndex = UnitClass("player")
-			LarthUnitFrames.target.Watch = LarthUnitFrames.Classes[englishClass].Debuff
+			local _, targetClass, _ = UnitClass("target")
+			local _, playerClass, _ = UnitClass("player")
+			local color = RAID_CLASS_COLORS[targetClass]
+			LarthUnitFrames.target.Name:SetTextColor(color.r, color.g, color.b)
+			LarthUnitFrames.target.Watch = LarthUnitFrames.Classes[playerClass].Debuff
 			LarthUnitFrames.target.setHealth()
 			LarthUnitFrames.target.setPower()
 		end
@@ -127,6 +102,5 @@ LarthUnitFrames.target.Frame:SetScript("OnEvent", function(self, event, ...)
 		LarthUnitFrames.target.HealthAbs:SetText("")
 		LarthUnitFrames.target.Power:SetText("")
 		LarthUnitFrames.target.PowerAbs:SetText("")
-	end
-	
+	end	
 end)
