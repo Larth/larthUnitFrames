@@ -75,7 +75,7 @@ for i = 1, 40, 1 do
 		end
 	end)
 	
-	-- guess i could move tihs to OnEvent
+	-- guess i could move this to OnEvent
 	LarthUnitFrames["raid"..i]:SetScript("OnUpdate", function(self, elapsed)
 		if UnitExists("raid"..i) then 
 			local health = UnitHealth("raid"..i)
