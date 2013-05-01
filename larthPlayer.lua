@@ -1,30 +1,3 @@
--- initialize player table
-LarthUnitFrames.player = {}
-
--- set the health texts
-LarthUnitFrames.player.setHealth = function ()
-	local health = UnitHealth("player")
-	local maxHealth = UnitHealthMax("player")
-	local percent = 100*health/maxHealth
-	LarthUnitFrames.player.Health:SetText(LarthUnitFrames.textBar(percent))
-	LarthUnitFrames.player.HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
-	if health > 9999 then
-		LarthUnitFrames.player.HealthAbs:SetText(LarthUnitFrames.round(health/1000).."k")
-	else
-		LarthUnitFrames.player.HealthAbs:SetText(health)
-	end		
-end
-
--- set the power texts
-LarthUnitFrames.player.setPower = function()
-	local power = UnitPower("player")
-	local maxpower = UnitPowerMax("player")
-	local percent = 100*power/maxpower
-	LarthUnitFrames.player.PowerAbs:SetText(power)
-	LarthUnitFrames.player.Power:SetText(LarthUnitFrames.textBar(percent))
-
-end
-
 LarthUnitFrames.player.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent)
 LarthUnitFrames.player.Frame:EnableMouse(false)
 LarthUnitFrames.player.Frame:SetWidth(250)
@@ -65,8 +38,10 @@ LarthUnitFrames.player.Frame:SetScript("OnUpdate", function(self, elapsed)
 		LarthUnitFrames.player.Name:SetText(UnitName("player"))
 	end	
 	local buffString = ""
+	
 	if ( LarthUnitFrames.player.Watch) then
 		for i=1, # LarthUnitFrames.player.Watch do
+			local spellName = select(1, GetSpellInfo(LarthUnitFrames.player.Watch[i][1]))
 			local _, _, _, _, _, _, expirationTime, unitCaster = UnitBuff("player", LarthUnitFrames.player.Watch[i][1])
 			if(unitCaster=="player")then 
 				buffString = buffString..format("|cff%s%s|r", LarthUnitFrames.player.Watch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
@@ -84,15 +59,14 @@ LarthUnitFrames.player.Frame:RegisterEvent("UNIT_POWER")
 
 LarthUnitFrames.player.Frame:SetScript("OnEvent", function(self, event, ...)
 	if (event == "UNIT_POWER") then
-		LarthUnitFrames.player.setPower()
+		LarthUnitFrames.setPower("player")
 	elseif (event == "UNIT_HEALTH_FREQUENT") then
-		LarthUnitFrames.player.setHealth()
+		LarthUnitFrames.setHealth("player")
 	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
 		local localizedClass, englishClass, classIndex = UnitClass("player")
-		LarthUnitFrames.player.Watch = LarthUnitFrames.Classes[englishClass].Buff
 		--no name here, name is spammed in the onUpdate atm
 		--LarthUnitFrames.player.Name:SetText(UnitName("player"))
-		LarthUnitFrames.player.setHealth()
-		LarthUnitFrames.player.setPower()
+		LarthUnitFrames.setHealth("player")
+		LarthUnitFrames.setPower("player")
 	end
 end)

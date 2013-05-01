@@ -1,28 +1,3 @@
--- initialize target table
-LarthUnitFrames.target = {}
-
--- set the health texts
-LarthUnitFrames.target.setHealth = function ()
-	local health = UnitHealth("target")
-	local maxHealth = UnitHealthMax("target")
-	local percent = 100*health/maxHealth
-	LarthUnitFrames.target.Health:SetText(LarthUnitFrames.textBar(percent))
-	LarthUnitFrames.target.HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
-	if health > 9999 then
-		LarthUnitFrames.target.HealthAbs:SetText(LarthUnitFrames.round(health/1000).."k")
-	else
-		LarthUnitFrames.target.HealthAbs:SetText(health)
-	end		
-end
-
--- set the power texts
-LarthUnitFrames.target.setPower = function()
-	local power = UnitPower("target")
-	local maxpower = UnitPowerMax("target")
-	local percent = 100*power/maxpower
-	LarthUnitFrames.target.PowerAbs:SetText(power)
-	LarthUnitFrames.target.Power:SetText(LarthUnitFrames.textBar(percent))
-end
 
 
 LarthUnitFrames.target.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent)
@@ -44,7 +19,6 @@ LarthUnitFrames.target.Button.menu = function(self, unit, button, actionType)
 	end
 
 -- this code is so copy/paste	
-
 LarthUnitFrames.setText("target", "Health", "RIGHT", 20)
 LarthUnitFrames.setText("target", "HealthAbs", "LEFT", 20)
 LarthUnitFrames.setText("target", "PowerAbs", "BOTTOMLEFT", 14)
@@ -58,21 +32,24 @@ LarthUnitFrames.setText("target", "Aura", "TOPLEFT", 14)
 -- just saw this: there is some cast timer, too.
 LarthUnitFrames.target.Frame:SetScript("OnUpdate", function(self, elapsed)
 	local spell, _, _, _, _, endTime = UnitCastingInfo("target")
-	if spell then 
-		local finish = endTime/1000 - GetTime()
-		LarthUnitFrames.target.Name:SetText(spell.." - "..LarthUnitFrames.round(finish, 1))
-	else
-		LarthUnitFrames.target.Name:SetText(UnitName("target"))
-	end	
-	local buffString = ""
-	if ( LarthUnitFrames.target.Watch) then
-		for i=1, # LarthUnitFrames.target.Watch do
-			local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", LarthUnitFrames.target.Watch[i][1])
-			if(unitCaster=="player")then 
-				buffString = buffString..format("|cff%s%s|r", LarthUnitFrames.target.Watch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
+	if (UnitExists("target")) then
+		if spell then 
+			local finish = endTime/1000 - GetTime()
+			LarthUnitFrames.target.Name:SetText(format("%10s - %s", spell, LarthUnitFrames.round(finish, 1)))
+		else
+			LarthUnitFrames.target.Name:SetText(strsub(UnitName("target"),1,20))
+		end	
+		local buffString = ""
+		if ( LarthUnitFrames.target.Watch) then
+			for i=1, # LarthUnitFrames.target.Watch do
+				local spellName = select(1, GetSpellInfo(LarthUnitFrames.target.Watch[i][1]))
+				local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", spellName)
+				if(unitCaster=="player")then 
+					buffString = buffString..format("|cff%s%s|r", LarthUnitFrames.target.Watch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
+				end
 			end
+			LarthUnitFrames.target.Aura:SetText(buffString)
 		end
-		LarthUnitFrames.target.Aura:SetText(buffString)
 	end
 end)
 
@@ -85,22 +62,23 @@ LarthUnitFrames.target.Frame:RegisterEvent("UNIT_POWER")
 LarthUnitFrames.target.Frame:SetScript("OnEvent", function(self, event, ...)
 	if (UnitExists("target")) then
 		if (event == "UNIT_POWER") then
-			LarthUnitFrames.target.setPower()
+			LarthUnitFrames.setPower("target")
 		elseif (event == "UNIT_HEALTH_FREQUENT") then
-			LarthUnitFrames.target.setHealth()
+			LarthUnitFrames.setHealth("target")
 		elseif ( event == "PLAYER_TARGET_CHANGED" ) then
 			local _, targetClass, _ = UnitClass("target")
 			local _, playerClass, _ = UnitClass("player")
 			local color = RAID_CLASS_COLORS[targetClass]
 			LarthUnitFrames.target.Name:SetTextColor(color.r, color.g, color.b)
-			LarthUnitFrames.target.Watch = LarthUnitFrames.Classes[playerClass].Debuff
-			LarthUnitFrames.target.setHealth()
-			LarthUnitFrames.target.setPower()
+			LarthUnitFrames.setHealth("target")
+			LarthUnitFrames.setPower("target")
 		end
 	else
 		LarthUnitFrames.target.Health:SetText("")
 		LarthUnitFrames.target.HealthAbs:SetText("")
 		LarthUnitFrames.target.Power:SetText("")
 		LarthUnitFrames.target.PowerAbs:SetText("")
+		LarthUnitFrames.target.Name:SetText("")
+		LarthUnitFrames.target.Aura:SetText("")
 	end	
 end)

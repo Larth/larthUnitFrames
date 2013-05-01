@@ -1,4 +1,4 @@
--- I'm playing with the German client. If you're not, well, I don't really care.
+-- I'm playing with the German client. If you're not, well, sorry.
 
 LarthUnitFrames = {
 	Classes = {
@@ -6,13 +6,21 @@ LarthUnitFrames = {
 			Buff = { {"Horn des Winters", "0099ff"} },
 			Debuff = { {"Frostfieber", "6666ff"}, {"Blutseuche", "00ff00"} }
 		},
+		DRUID = {
+			Buff = {  },
+			Debuff = {  }
+		},
+		HUNTER = {
+			Buff = {  },
+			Debuff = {  }
+		},
 		MAGE = {
-			Buff = { {"Eisige Adern", "0099ff"}, {"Eisbarriere", "9999ff"} },
-			Debuff = { {"Frostbombe", "9966ff"} },
+			Buff = { {12472, "0099ff"}, {11426, "9999ff"} },
+			Debuff = { {44614, "9966ff"} },
 		},
 		MONK = {
-			Buff = { {"Eisige Adern", "0099ff"}, {"Eisbarriere", "9999ff"} },
-			Debuff = { {"Frostbombe", "9966ff"} },
+			Buff = { },
+			Debuff = { },
 			Special = 12
 		},
 		PALADIN = {
@@ -24,13 +32,28 @@ LarthUnitFrames = {
 			Buff = { {"Machtwort: Schild", "ff9999"} },
 			Debuff = { {"Schattenwort: Schmerz", "ff3366"}, {"Heiliges Feuer", "ff9900"} },
 		},
+		SHAMAN = {
+			Buff = {  },
+			Debuff = {  }
+		},
 		ROGUE = {
-			Buff = { {"Vergiften", "00ff00"}, {"Schattenklingen", "ff00ff"}, {"Zerh\195\164ckseln", "ffff00"} },
-			Debuff = { {"Blutung", "ff0000"}, {"Vendetta", "ffffff"}, {"Blutroter Sturm", "ff9999"} },
+			Buff = { {"Vergiften", "00ff00"}, {"Schattenklingen", "ff00ff"}, {"Zerh\195\164ckseln", "ffff00"}, {"Adrenalinrausch", "ffffff"} },
+			Debuff = { {"Blutung", "ff0000"}, {"Vendetta", "ffffff"}, {"Blutroter Sturm", "ff9999"}, {"Enth\195\188llender Sto\195\159", "cd7f32"} },
 			RightClick = "Schurkenhandel"
+		},
+		WARLOCK = {
+			Buff = {  },
+			Debuff = {  }
+		},
+		WARRIOR = {
+			Buff = {  },
+			Debuff = {  }
 		}
 	}
 }
+
+LarthUnitFrames.target = {}
+LarthUnitFrames.player = {}
 LarthUnitFrames.font = "Interface\\AddOns\\larthUnitFrames\\font.ttf"
 
 LarthUnitFrames.round = function(number, decimals)
@@ -57,7 +80,28 @@ LarthUnitFrames.setText = function (unit, text, position, size)
 	LarthUnitFrames[unit][text]:SetTextColor(1, 1, 1)
 end
 
+-- set the health texts
+LarthUnitFrames.setHealth = function (unit)
+	local health = UnitHealth(unit)
+	local maxHealth = UnitHealthMax(unit)
+	local percent = 100*health/maxHealth
+	LarthUnitFrames[unit].Health:SetText(LarthUnitFrames.textBar(percent))
+	LarthUnitFrames[unit].HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
+	if health > 9999 then
+		LarthUnitFrames[unit].HealthAbs:SetText(LarthUnitFrames.round(health/1000).."k")
+	else
+		LarthUnitFrames[unit].HealthAbs:SetText(health)
+	end		
+end
 
+-- set the power texts
+LarthUnitFrames.setPower = function(unit)
+	local power = UnitPower(unit)
+	local maxpower = UnitPowerMax(unit)
+	local percent = 100*power/maxpower
+	LarthUnitFrames[unit].PowerAbs:SetText(power)
+	LarthUnitFrames[unit].Power:SetText(LarthUnitFrames.textBar(percent))
+end
 local function trimUnitName(unitName)
 	local derString = ""
 	if (strlen(unitName) < 20) then
@@ -98,7 +142,8 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 		-- make those proc indikaters fit between player and target frames
 		SpellActivationOverlayFrame:SetScale(0.6);
 		local localizedClass, englishClass, classIndex = UnitClass("player")
-		
+		LarthUnitFrames.target.Watch = LarthUnitFrames.Classes[englishClass].Debuff
+		LarthUnitFrames.player.Watch = LarthUnitFrames.Classes[englishClass].Buff
 		-- hide the blizzard frames
 		PlayerFrame:Hide()
         PlayerFrame:UnregisterAllEvents()
@@ -108,7 +153,7 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
         ComboFrame:UnregisterAllEvents()
 		RuneFrame:UnregisterAllEvents()
 		RuneFrame:Hide()
-		
+
 		-- holy power, chi (hopefully)
 		if (LarthUnitFrames.Classes[englishClass].Special) then
 			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
@@ -200,15 +245,15 @@ end)
 -- -----------------------------------------------------------------------------
 -- Create Special blah blah frame
 -- -----------------------------------------------------------------------------
-larthSpecial = {}
-larthSpecial.Frame = CreateFrame("Frame", "larsClassSpecial", UIParent)
-larthSpecial.Frame:SetFrameLevel(3)
-larthSpecial.Frame:SetWidth(50)
-larthSpecial.Frame:SetHeight(50)
-larthSpecial.Frame:SetPoint("CENTER", 0, -100)
-larthSpecial.Frame:Show()
+LarthUnitFrames.Special = {}
+LarthUnitFrames.Special.Frame = CreateFrame("Frame", "larsClassSpecial", UIParent)
+LarthUnitFrames.Special.Frame:SetFrameLevel(3)
+LarthUnitFrames.Special.Frame:SetWidth(50)
+LarthUnitFrames.Special.Frame:SetHeight(50)
+LarthUnitFrames.Special.Frame:SetPoint("CENTER", 0, -100)
+LarthUnitFrames.Special.Frame:Show()
 
-larthSpecial.Text = larthSpecial.Frame:CreateFontString(nil, "OVERLAY")
-larthSpecial.Text:SetPoint("CENTER")
-larthSpecial.Text:SetFont(LarthUnitFrames.font, 20, "OUTLINE")
-larthSpecial.Text:SetTextColor(1, 1, 1)
+LarthUnitFrames.Special.Text = LarthUnitFrames.Special.Frame:CreateFontString(nil, "OVERLAY")
+LarthUnitFrames.Special.Text:SetPoint("CENTER")
+LarthUnitFrames.Special.Text:SetFont(LarthUnitFrames.font, 20, "OUTLINE")
+LarthUnitFrames.Special.Text:SetTextColor(1, 1, 1)
