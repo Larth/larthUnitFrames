@@ -28,7 +28,7 @@ LarthUnitFrames.setText("player", "Aura", "TOPRIGHT", 14)
 
 -- show durations of the important buffs/debuffs specified somewhere else
 -- maybe put a timer thing here?
--- just saw this: ther is some cast timer, too.
+-- just saw this: there is some cast timer, too.
 LarthUnitFrames.player.Frame:SetScript("OnUpdate", function(self, elapsed)
 	local spell, _, _, _, _, endTime = UnitCastingInfo("player")
 	if spell then 

@@ -156,7 +156,7 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 
 		-- holy power, chi (hopefully)
 		if (LarthUnitFrames.Classes[englishClass].Special) then
-			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
+			LarthUnitFrames.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
 				local tempString = ""
 				local power = UnitPower("player" , LarthUnitFrames.Classes[englishClass].Special);
 				if power > 0 then
@@ -164,13 +164,13 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 						tempString = tempString.."# "
 					end
 				end
-				larthSpecial.Text:SetText(tempString)
+				LarthUnitFrames.Special.Text:SetText(tempString)
 			end)
 		end
 		
 		-- some bad code here
 		if (classIndex == 6) then
-			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
+			LarthUnitFrames.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
 			local tempString = "";
 			for i=1, 6, 1 do				
 				local start, duration, runeReady = GetRuneCooldown(i)
@@ -185,25 +185,25 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), cooldown.." ")
 				end
 			end
-			larthSpecial.Text:SetText(tempString)
+			LarthUnitFrames.Special.Text:SetText(tempString)
 			end)
 		end
 
 		if (classIndex == 4) then 
-			larthSpecial.Frame:SetScript("OnUpdate", function(self, elapsed)
+			LarthUnitFrames.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
 				local comboPoints = GetComboPoints("player", "target");
 				if ( comboPoints < 1 ) then
-					larthSpecial.Text:SetText("")
+					LarthUnitFrames.Special.Text:SetText("")
 				elseif (comboPoints < 2) then 
-					larthSpecial.Text:SetText("#")
+					LarthUnitFrames.Special.Text:SetText("#")
 				elseif (comboPoints < 3) then 
-					larthSpecial.Text:SetText("# #")
+					LarthUnitFrames.Special.Text:SetText("# #")
 				elseif (comboPoints < 4) then 
-					larthSpecial.Text:SetText(format("|cff%s%s|r", "ffff00", "# # #"))
+					LarthUnitFrames.Special.Text:SetText(format("|cff%s%s|r", "ffff00", "# # #"))
 				elseif (comboPoints < 5) then 
-					larthSpecial.Text:SetText(format("|cff%s%s|r", "ff9900", "# # # #"))
+					LarthUnitFrames.Special.Text:SetText(format("|cff%s%s|r", "ff9900", "# # # #"))
 				else
-					larthSpecial.Text:SetText(format("|cff%s%s|r", "ff0000", "# # # # #"))
+					LarthUnitFrames.Special.Text:SetText(format("|cff%s%s|r", "ff0000", "# # # # #"))
 				end
 			end)
 		end

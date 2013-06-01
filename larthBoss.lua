@@ -44,5 +44,4 @@ for i = 1, 5, 1 do
 			LarthUnitFrames["boss"..i].Power:SetText("")
 		end
 	end)
-
 end
