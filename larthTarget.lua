@@ -15,7 +15,7 @@ LarthUnitFrames.target.Button:SetAttribute('type1', 'target')
 LarthUnitFrames.target.Button:SetAttribute('unit', "target")
 LarthUnitFrames.target.Button:SetAttribute('type2', 'menu')
 LarthUnitFrames.target.Button.menu = function(self, unit, button, actionType) 
-		ToggleDropDownMenu(1, 1, PlayerFrameDropDown, LarthUnitFrames.target.Button, 0 ,0) 
+		ToggleDropDownMenu(1, 1, TargetFrameDropDown, LarthUnitFrames.target.Button, 0 ,0) 
 	end
 
 -- this code is so copy/paste	
@@ -39,17 +39,17 @@ LarthUnitFrames.target.Frame:SetScript("OnUpdate", function(self, elapsed)
 		else
 			LarthUnitFrames.target.Name:SetText(strsub(UnitName("target"),1,20))
 		end	
-		local buffString = ""
-		if ( LarthUnitFrames.target.Watch) then
-			for i=1, # LarthUnitFrames.target.Watch do
-				local spellName = select(1, GetSpellInfo(LarthUnitFrames.target.Watch[i][1]))
-				local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", spellName)
-				if(unitCaster=="player")then 
-					buffString = buffString..format("|cff%s%s|r", LarthUnitFrames.target.Watch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
-				end
-			end
-			LarthUnitFrames.target.Aura:SetText(buffString)
-		end
+		-- local buffString = ""
+		-- if ( LarthUnitFrames.target.Watch) then
+			-- for i=1, # LarthUnitFrames.target.Watch do
+				-- local spellName = select(1, GetSpellInfo(LarthUnitFrames.target.Watch[i][1]))
+				-- local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", spellName)
+				-- if(unitCaster=="player")then 
+					-- buffString = buffString..format("|cff%s%s|r", LarthUnitFrames.target.Watch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
+				-- end
+			-- end
+			-- LarthUnitFrames.target.Aura:SetText(buffString)
+		-- end
 	end
 end)
 
