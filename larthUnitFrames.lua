@@ -4,7 +4,7 @@ LarthUnitFrames = {
 	Classes = {
 		DEATHKNIGHT = {
 			Buff = { {"Horn des Winters", "0099ff"} },
-			Debuff = { {"Frostfieber", "6666ff"}, {"Blutseuche", "00ff00"} }
+			Debuff = { {"Frost Fever", "6666ff"}, {"Blood Plague", "00ff00"} }
 		},
 		DRUID = {
 			Buff = {  },
