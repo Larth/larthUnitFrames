@@ -25,7 +25,6 @@ LarthUnitFrames.setText("player", "Name", "TOPLEFT", 18)
 LarthUnitFrames.setText("player", "Aura", "TOPRIGHT", 14)
 
 
-
 -- show durations of the important buffs/debuffs specified somewhere else
 -- maybe put a timer thing here?
 -- just saw this: there is some cast timer, too.
@@ -37,28 +36,29 @@ LarthUnitFrames.player.Frame:SetScript("OnUpdate", function(self, elapsed)
 	else
 		LarthUnitFrames.player.Name:SetText(UnitName("player"))
 	end	
+     
+        
 	local buffString = ""
-	
-	-- if ( LarthUnitFrames.player.Watch) then
-		-- for i=1, # LarthUnitFrames.player.Watch do
-			-- local spellName = select(1, GetSpellInfo(LarthUnitFrames.player.Watch[i][1]))
-			-- local _, _, _, _, _, _, expirationTime, unitCaster = UnitBuff("player", LarthUnitFrames.player.Watch[i][1])
-			-- if(unitCaster=="player")then 
-				-- buffString = buffString..format("|cff%s%s|r", LarthUnitFrames.player.Watch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
-			-- end
-		-- end
-		-- LarthUnitFrames.player.Aura:SetText(buffString)
-	-- end
+	 if ( LarthUnitFrames.player.Watch) then
+		 for i=1, # LarthUnitFrames.player.Watch do
+			 local spellName = select(1, GetSpellInfo(LarthUnitFrames.player.Watch[i][1]))
+			 local _, _, _, _, _, _, expirationTime, unitCaster = UnitBuff("player", spellName)
+			 if(unitCaster=="player")then 
+				 buffString = buffString..format("|cff%s%s|r", LarthUnitFrames.player.Watch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
+			 end
+		 end
+		 LarthUnitFrames.player.Aura:SetText(buffString)
+	 end
 end)
 
 
 -- updating health and power when it is needed (works most of the time)
 LarthUnitFrames.player.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 LarthUnitFrames.player.Frame:RegisterEvent("UNIT_HEALTH_FREQUENT")
-LarthUnitFrames.player.Frame:RegisterEvent("UNIT_POWER")
+LarthUnitFrames.player.Frame:RegisterEvent("UNIT_POWER_FREQUENT")
 
 LarthUnitFrames.player.Frame:SetScript("OnEvent", function(self, event, ...)
-	if (event == "UNIT_POWER") then
+	if (event == "UNIT_POWER_FREQUENT") then
 		LarthUnitFrames.setPower("player")
 	elseif (event == "UNIT_HEALTH_FREQUENT") then
 		LarthUnitFrames.setHealth("player")

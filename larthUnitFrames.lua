@@ -3,20 +3,38 @@
 LarthUnitFrames = {
 	Classes = {
 		DEATHKNIGHT = {
-			Buff = { {"Horn des Winters", "0099ff"} },
-			Debuff = { {"Frost Fever", "6666ff"}, {"Blood Plague", "00ff00"} }
+			Buff = { 
+                {57330, "0099ff"} --horn/remove
+            }, 
+			Debuff = { 
+                {55095, "6666ff"}, --frost fever
+                {55078, "00ff00"}  --blood plague
+            } 
 		},
 		DRUID = {
-			Buff = {  },
-			Debuff = {  }
+			Buff = { 
+                {52610, "ffff00"}, --Savage Roar
+                {102543, "0000ff"},--Incarnation CAT
+                {106952, "ff0000"}, --Berserk
+                {16974, "00ff00"}--Predatory Swiftness
+                },
+			Debuff = {
+                {1079, "ff0000"}, --Rip
+                {1822, "ffff00"} --Rake
+            }
 		},
 		HUNTER = {
 			Buff = {  },
 			Debuff = {  }
 		},
 		MAGE = {
-			Buff = { {12472, "0099ff"}, {11426, "9999ff"} },
-			Debuff = { {44614, "9966ff"} },
+			Buff = { 
+                {12472, "0099ff"}, --icy veins,
+                {11426, "9999ff"} --ice barrier
+            },  
+			Debuff = { 
+                {44614, "9966ff"}--frostfire bolt
+            } 
 		},
 		MONK = {
 			Buff = { },
@@ -24,22 +42,32 @@ LarthUnitFrames = {
 			Special = 12
 		},
 		PALADIN = {
-			Buff = { {"Inquisition", "ff9900"} },
+			Buff = { },
 			Debuff = {  },
 			Special = 9
 		},
 		PRIEST = {
-			Buff = { {"Machtwort: Schild", "ff9999"} },
-			Debuff = { {"Schattenwort: Schmerz", "ff3366"}, {"Heiliges Feuer", "ff9900"} },
+			Buff = {  },
+			Debuff = {  }
 		},
 		SHAMAN = {
 			Buff = {  },
 			Debuff = {  }
 		},
 		ROGUE = {
-			Buff = { {"Vergiften", "00ff00"}, {"Schattenklingen", "ff00ff"}, {"Zerh\195\164ckseln", "ffff00"}, {"Adrenalinrausch", "ffffff"} },
-			Debuff = { {"Blutung", "ff0000"}, {"Vendetta", "ffffff"}, {"Blutroter Sturm", "ff9999"}, {"Enth\195\188llender Sto\195\159", "cd7f32"} },
-			RightClick = "Schurkenhandel"
+			Buff = { 
+                {32645, "00ff00"}, --Envenom
+                {51690, "ff00ff"}, --Killing Spree
+                {5171, "ffff00"}, --Slice and Dice
+                {13750, "ffffff"}, --Adrenaline Rush
+                {152151,"ff00ff"} --Shadow Reflection
+            },
+			Debuff = { 
+                {1943, "ff0000"}, --Rupture
+                {79140, "ffffff"}, --Vendetta
+                {16511, "ff9999"}, --Hemorrhage
+                {84617, "cd7f32"} --Revealing Strike
+            }--Revealing Strike
 		},
 		WARLOCK = {
 			Buff = {  },
@@ -189,7 +217,7 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 			end)
 		end
 
-		if (classIndex == 4) then 
+		if ((classIndex == 4) or (classIndex == 11)) then 
 			LarthUnitFrames.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
 				local comboPoints = GetComboPoints("player", "target");
 				if ( comboPoints < 1 ) then

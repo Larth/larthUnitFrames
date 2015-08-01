@@ -1,5 +1,3 @@
-
-
 LarthUnitFrames.target.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent)
 LarthUnitFrames.target.Frame:EnableMouse(false)
 LarthUnitFrames.target.Frame:SetWidth(250)
@@ -41,18 +39,14 @@ LarthUnitFrames.target.Frame:SetScript("OnUpdate", function(self, elapsed)
 		end	
         
 		 local buffString = ""
-		 if ( LarthUnitFrames.target.Watch) then
-                
+		 if ( LarthUnitFrames.target.Watch) then              
 			 for i=1, # LarthUnitFrames.target.Watch do
-				 local spellame = "lirbadon"
-                    spellName = LarthUnitFrames.target.Watch[i][1]
-                    
-                 if(spellName ~= "lirbadon")then
-                     local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", spellName)
+                    local spellName = select(1, GetSpellInfo(LarthUnitFrames.target.Watch[i][1]))
+                    local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", spellName)
                      if(unitCaster=="player")then 
                          buffString = buffString..format("|cff%s%s|r", LarthUnitFrames.target.Watch[i][2], (LarthUnitFrames.round(expirationTime - GetTime()).." "))
                      end
-                  end
+                 -- end
 			 end
 			 LarthUnitFrames.target.Aura:SetText(buffString)
 		 end
