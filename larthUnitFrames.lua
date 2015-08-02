@@ -1,5 +1,3 @@
--- I'm playing with the German client. If you're not, well, sorry.
-
 LarthUnitFrames = {
 	Classes = {
 		DEATHKNIGHT = {
@@ -219,20 +217,25 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 
 		if ((classIndex == 4) or (classIndex == 11)) then 
 			LarthUnitFrames.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
-				local comboPoints = GetComboPoints("player", "target");
-				if ( comboPoints < 1 ) then
-					LarthUnitFrames.Special.Text:SetText("")
-				elseif (comboPoints < 2) then 
-					LarthUnitFrames.Special.Text:SetText("#")
-				elseif (comboPoints < 3) then 
-					LarthUnitFrames.Special.Text:SetText("# #")
-				elseif (comboPoints < 4) then 
-					LarthUnitFrames.Special.Text:SetText(format("|cff%s%s|r", "ffff00", "# # #"))
-				elseif (comboPoints < 5) then 
-					LarthUnitFrames.Special.Text:SetText(format("|cff%s%s|r", "ff9900", "# # # #"))
-				else
-					LarthUnitFrames.Special.Text:SetText(format("|cff%s%s|r", "ff0000", "# # # # #"))
-				end
+                local countAnt = select(4, UnitAura("player", "Anticipation"))
+				local comboPoints = GetComboPoints("player")
+                local strText = {}
+                local strFormat = "|cff%s%s|cff%s%s|r"
+                local strColor = {}
+                        
+                local strAnt = ""
+                local strCombo = ""
+                
+                if countAnt == nil then countAnt = 0 end
+                
+                for i=1, comboPoints, 1 do
+                    if countAnt >= i then
+                        strAnt = strAnt.." # "
+                    else
+                        strCombo = strCombo.." # "
+                    end
+                end
+                LarthUnitFrames.Special.Text:SetText(format("|cff%s%s|cff%s%s|r", "ffffff", strCombo, "ff0000", strAnt))
 			end)
 		end
 	end
