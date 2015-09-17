@@ -35,9 +35,9 @@
 	 -- Position the Frame
 	 -- 
 	 if i <= 25 then 
-		 LarthUnitFrames["raid"..i].Frame:SetPoint("TOPLEFT", 15, -150-i*20)
+		 LarthUnitFrames["raid"..i].Frame:SetPoint("TOPLEFT", 15, -300-i*20)
 	 else
-		 LarthUnitFrames["raid"..i].Frame:SetPoint("TOPLEFT", 120, -150-(i-25)*20)
+		 LarthUnitFrames["raid"..i].Frame:SetPoint("TOPLEFT", 120, -300-(i-25)*20)
 	 end
 	 LarthUnitFrames["raid"..i].Frame:Hide()
 	
@@ -46,6 +46,7 @@
 	
 	 LarthUnitFrames["raid"..i].Frame:RegisterEvent("GROUP_ROSTER_UPDATE")
 	 LarthUnitFrames["raid"..i].Frame:RegisterEvent("PLAYER_ROLES_ASSIGNED")
+    LarthUnitFrames["raid"..i].Frame:RegisterEvent("UNIT_NAME_UPDATE")
 
 	 LarthUnitFrames["raid"..i].Frame:SetScript("OnEvent", function(self, event, ...)	
 		 if UnitExists("raid"..i) then 		
