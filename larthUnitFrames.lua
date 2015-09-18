@@ -45,8 +45,14 @@ LarthUnitFrames = {
 			Special = 9
 		},
 		PRIEST = {
-			Buff = {  },
-			Debuff = {  }
+			Buff = { 
+                {129197, "000000"} --Insanity
+            },
+			Debuff = { 
+                {589, "ffff00"}, --Shadow Word: Pain
+                {2944, "0000ff"},--Devouring Plague
+                {34914, "ff0000"} --Vampiric Touch
+            }
 		},
 		SHAMAN = {
 			Buff = {  },
