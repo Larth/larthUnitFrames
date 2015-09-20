@@ -78,7 +78,7 @@
 			 local maxHealth = UnitHealthMax("raid"..i)
 			 local percent = LarthUnitFrames.round(100*health/maxHealth, 0)
 			 LarthUnitFrames["raid"..i].Health:SetText(LarthUnitFrames.round(percent))
-			 LarthUnitFrames["raid"..i].Health:SetTextColor(1-(percent/100), (percent/100), 0)
+			 LarthUnitFrames["raid"..i].Health:SetTextColor((1-percent/100)*2, percent/50, 0)
 		 else
 			 LarthUnitFrames["raid"..i].Health:SetText("")
 			 LarthUnitFrames["raid"..i].Name:SetText("")
