@@ -87,19 +87,23 @@ LarthUnitFrames.pet.Frame:RegisterEvent("UNIT_HEALTH_FREQUENT")
 LarthUnitFrames.pet.Frame:RegisterEvent("UNIT_POWER_FREQUENT")
 
 LarthUnitFrames.pet.Frame:SetScript("OnEvent", function(self, event, ...)
-    local countAnt = select(7, UnitAura("pet", "Mend Pet"))
-    if(countAnt) then
-        LarthUnitFrames["pet"].Name:SetTextColor(0,1,0)
-    else
-        LarthUnitFrames["pet"].Name:SetTextColor(1,1,1)
-    end
-    
-    local health = UnitHealth("pet")
-    local maxHealth = UnitHealthMax("pet")
-    local percent = LarthUnitFrames.round(100*health/maxHealth, 0)
-    LarthUnitFrames["pet"].Health:SetTextColor((1-percent/100)*2, percent/50, 0)
-    LarthUnitFrames["pet"].Health:SetText(LarthUnitFrames.round(percent))
+    if UnitExists("pet") then 
+        local countAnt = select(7, UnitAura("pet", "Mend Pet"))
+        if(countAnt) then
+            LarthUnitFrames["pet"].Name:SetTextColor(0,1,0)
+        else
+            LarthUnitFrames["pet"].Name:SetTextColor(1,1,1)
+        end
 
-    LarthUnitFrames.pet.Name:SetText(UnitName("pet"))
+        local health = UnitHealth("pet")
+        local maxHealth = UnitHealthMax("pet")
+        local percent = LarthUnitFrames.round(100*health/maxHealth, 0)
+        LarthUnitFrames["pet"].Health:SetTextColor((1-percent/100)*2, percent/50, 0)
+        LarthUnitFrames["pet"].Health:SetText(LarthUnitFrames.round(percent))
+
+        LarthUnitFrames.pet.Name:SetText(UnitName("pet"))
+    else
+        LarthUnitFrames.pet.Frame:Hide()
+    end
 
 end)
