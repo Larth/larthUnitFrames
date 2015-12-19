@@ -46,7 +46,7 @@
 	
 	 LarthUnitFrames["raid"..i].Frame:RegisterEvent("GROUP_ROSTER_UPDATE")
 	 LarthUnitFrames["raid"..i].Frame:RegisterEvent("PLAYER_ROLES_ASSIGNED")
-    LarthUnitFrames["raid"..i].Frame:RegisterEvent("UNIT_NAME_UPDATE")
+     LarthUnitFrames["raid"..i].Frame:RegisterEvent("UNIT_NAME_UPDATE")
 
 	 LarthUnitFrames["raid"..i].Frame:SetScript("OnEvent", function(self, event, ...)	
 		 if UnitExists("raid"..i) then 		

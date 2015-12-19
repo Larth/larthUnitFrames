@@ -70,3 +70,36 @@ LarthUnitFrames.player.Frame:SetScript("OnEvent", function(self, event, ...)
 		LarthUnitFrames.setPower("player")
 	end
 end)
+
+-- quick and dirty pet frame
+LarthUnitFrames.pet = {}
+LarthUnitFrames.pet.Frame = CreateFrame("Button", "larthPetFrame", UIParent)
+LarthUnitFrames.pet.Frame:EnableMouse(false)
+LarthUnitFrames.pet.Frame:SetWidth(100)
+LarthUnitFrames.pet.Frame:SetHeight(50)
+LarthUnitFrames.pet.Frame:SetPoint("CENTER", -250, -100)
+
+LarthUnitFrames.setText("pet", "Health", "LEFT", 20)
+LarthUnitFrames.setText("pet", "Name", "TOPLEFT", 18)
+
+LarthUnitFrames.pet.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+LarthUnitFrames.pet.Frame:RegisterEvent("UNIT_HEALTH_FREQUENT")
+LarthUnitFrames.pet.Frame:RegisterEvent("UNIT_POWER_FREQUENT")
+
+LarthUnitFrames.pet.Frame:SetScript("OnEvent", function(self, event, ...)
+    local countAnt = select(7, UnitAura("pet", "Mend Pet"))
+    if(countAnt) then
+        LarthUnitFrames["pet"].Name:SetTextColor(0,1,0)
+    else
+        LarthUnitFrames["pet"].Name:SetTextColor(1,1,1)
+    end
+    
+    local health = UnitHealth("pet")
+    local maxHealth = UnitHealthMax("pet")
+    local percent = LarthUnitFrames.round(100*health/maxHealth, 0)
+    LarthUnitFrames["pet"].Health:SetTextColor((1-percent/100)*2, percent/50, 0)
+    LarthUnitFrames["pet"].Health:SetText(LarthUnitFrames.round(percent))
+
+    LarthUnitFrames.pet.Name:SetText(UnitName("pet"))
+
+end)
