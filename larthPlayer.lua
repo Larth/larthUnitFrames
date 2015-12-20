@@ -78,6 +78,7 @@ LarthUnitFrames.pet.Frame:EnableMouse(false)
 LarthUnitFrames.pet.Frame:SetWidth(100)
 LarthUnitFrames.pet.Frame:SetHeight(50)
 LarthUnitFrames.pet.Frame:SetPoint("CENTER", -250, -100)
+LarthUnitFrames.pet.Frame:Hide()
 
 LarthUnitFrames.setText("pet", "Health", "LEFT", 20)
 LarthUnitFrames.setText("pet", "Name", "TOPLEFT", 18)
