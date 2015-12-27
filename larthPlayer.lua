@@ -3,6 +3,8 @@ LarthUnitFrames.player.Frame:EnableMouse(false)
 LarthUnitFrames.player.Frame:SetWidth(250)
 LarthUnitFrames.player.Frame:SetHeight(50)
 LarthUnitFrames.player.Frame:SetPoint("CENTER", -250, 0)
+LarthUnitFrames.player.Frame:SetAttribute("unit", "player")
+RegisterUnitWatch(LarthUnitFrames.player.Frame)
 
 LarthUnitFrames.player.Button = CreateFrame("Button", "button_player", LarthUnitFrames.player.Frame, "SecureActionButtonTemplate ");
 LarthUnitFrames.player.Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -71,7 +73,7 @@ LarthUnitFrames.player.Frame:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
--- quick and dirty pet frame
+-- quick pet frame
 LarthUnitFrames.pet = {}
 LarthUnitFrames.pet.Frame = CreateFrame("Button", "larthPetFrame", UIParent, "SecureUnitButtonTemplate")
 LarthUnitFrames.pet.Frame:SetAttribute("unit", "pet")
@@ -79,6 +81,7 @@ LarthUnitFrames.pet.Frame:SetWidth(100)
 LarthUnitFrames.pet.Frame:SetHeight(50)
 LarthUnitFrames.pet.Frame:SetPoint("CENTER", -250, -100)
 RegisterUnitWatch(LarthUnitFrames.pet.Frame)
+
 LarthUnitFrames.setText("pet", "Health", "LEFT", 20)
 LarthUnitFrames.setText("pet", "Name", "TOPLEFT", 18)
 
@@ -87,9 +90,8 @@ LarthUnitFrames.pet.Frame:RegisterEvent("UNIT_PET")
 LarthUnitFrames.pet.Frame:RegisterEvent("UNIT_AURA")
 
 LarthUnitFrames.pet.Frame:SetScript("OnEvent", function(self, event, ...)
-
     if (event == "UNIT_AURA") then
-			-- Green name with Mend Pet BUff active
+			-- Green name with Mend Pet Buff active
         local countAnt = select(7, UnitAura("pet", "Mend Pet"))
         if(countAnt) then
             LarthUnitFrames["pet"].Name:SetTextColor(0,1,0)
@@ -105,5 +107,4 @@ LarthUnitFrames.pet.Frame:SetScript("OnEvent", function(self, event, ...)
     local percent = LarthUnitFrames.round(100*health/maxHealth, 0)
     LarthUnitFrames["pet"].Health:SetTextColor((1-percent/100)*2, percent/50, 0)
     LarthUnitFrames["pet"].Health:SetText(LarthUnitFrames.round(percent))
-
 end)

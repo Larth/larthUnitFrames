@@ -1,10 +1,12 @@
-LarthUnitFrames.target.Frame = CreateFrame("Button", "larthTargetFrame", UIParent)
-LarthUnitFrames.target.Frame:EnableMouse(false)
+LarthUnitFrames.target.Frame = CreateFrame("Button", "larthTargetFrame", UIParent, "SecureUnitButtonTemplate")
+--LarthUnitFrames.target.Frame:EnableMouse(false)
+LarthUnitFrames.target.Frame:SetAttribute("unit", "target")
 LarthUnitFrames.target.Frame:SetWidth(250)
 LarthUnitFrames.target.Frame:SetHeight(50)
 LarthUnitFrames.target.Frame:SetPoint("CENTER", 250, 0)
+RegisterUnitWatch(LarthUnitFrames.target.Frame)
 
-LarthUnitFrames.target.Button = CreateFrame("Button", "button_player", LarthUnitFrames.target.Frame, "SecureActionButtonTemplate ");
+LarthUnitFrames.target.Button = CreateFrame("Button", "button_target", LarthUnitFrames.target.Frame, "SecureActionButtonTemplate ");
 LarthUnitFrames.target.Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 LarthUnitFrames.target.Button:SetWidth(50)
 LarthUnitFrames.target.Button:SetHeight(20)
@@ -15,7 +17,6 @@ LarthUnitFrames.target.Button:SetAttribute('type2', 'menu')
 LarthUnitFrames.target.Button.menu = function(self, unit, button, actionType)
 		ToggleDropDownMenu(1, 1, TargetFrameDropDown, LarthUnitFrames.target.Button, 0 ,0)
 	end
-
 -- this code is so copy/paste
 LarthUnitFrames.setText("target", "Health", "RIGHT", 20)
 LarthUnitFrames.setText("target", "HealthAbs", "LEFT", 20)
@@ -69,13 +70,5 @@ LarthUnitFrames.target.Frame:SetScript("OnEvent", function(self, event, ...)
 			local color = RAID_CLASS_COLORS[targetClass]
 			LarthUnitFrames.target.Name:SetTextColor(color.r, color.g, color.b)
 		end
-	else
-		-- because hide/show won't work in combat
-		LarthUnitFrames.target.Health:SetText("")
-		LarthUnitFrames.target.HealthAbs:SetText("")
-		LarthUnitFrames.target.Power:SetText("")
-		LarthUnitFrames.target.PowerAbs:SetText("")
-		LarthUnitFrames.target.Name:SetText("")
-		LarthUnitFrames.target.Aura:SetText("")
 	end
 end)
