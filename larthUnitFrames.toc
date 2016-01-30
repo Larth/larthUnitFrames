@@ -9,3 +9,4 @@ larthRaid.lua
 larthPlayer.lua
 larthTarget.lua
 larthBoss.lua
+config\rogue.lua

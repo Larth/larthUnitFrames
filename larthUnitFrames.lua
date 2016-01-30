@@ -1,16 +1,16 @@
-LarthUnitFrames = {
+LarthUF = {
 	Classes = {
 		DEATHKNIGHT = {
-			Buff = { 
+			Buff = {
                 {57330, "0099ff"} --horn/remove
-            }, 
-			Debuff = { 
+            },
+			Debuff = {
                 {55095, "6666ff"}, --frost fever
                 {55078, "00ff00"}  --blood plague
-            } 
+            }
 		},
 		DRUID = {
-			Buff = { 
+			Buff = {
                 {52610, "ffff00"}, --Savage Roar
                 {102543, "0000ff"},--Incarnation CAT
                 {106952, "ff0000"}, --Berserk
@@ -26,13 +26,13 @@ LarthUnitFrames = {
 			Debuff = {  }
 		},
 		MAGE = {
-			Buff = { 
+			Buff = {
                 {12472, "0099ff"}, --icy veins,
                 {11426, "9999ff"} --ice barrier
-            },  
-			Debuff = { 
+            },
+			Debuff = {
                 {44614, "9966ff"}--frostfire bolt
-            } 
+            }
 		},
 		MONK = {
 			Buff = { },
@@ -45,10 +45,10 @@ LarthUnitFrames = {
 			Special = 9
 		},
 		PRIEST = {
-			Buff = { 
+			Buff = {
                 {129197, "000000"} --Insanity
             },
-			Debuff = { 
+			Debuff = {
                 {589, "ffff00"}, --Shadow Word: Pain
                 {2944, "0000ff"},--Devouring Plague
                 {34914, "ff0000"} --Vampiric Touch
@@ -59,14 +59,14 @@ LarthUnitFrames = {
 			Debuff = {  }
 		},
 		ROGUE = {
-			Buff = { 
+			Buff = {
                 {32645, "00ff00"}, --Envenom
                 {51690, "ff00ff"}, --Killing Spree
                 {5171, "ffff00"}, --Slice and Dice
                 {13750, "ffffff"}, --Adrenaline Rush
                 {152151,"ff00ff"} --Shadow Reflection
             },
-			Debuff = { 
+			Debuff = {
                 {1943, "ff0000"}, --Rupture
                 {79140, "ffffff"}, --Vendetta
                 {16511, "ff9999"}, --Hemorrhage
@@ -84,17 +84,18 @@ LarthUnitFrames = {
 	}
 }
 
-LarthUnitFrames.target = {}
-LarthUnitFrames.player = {}
-LarthUnitFrames.font = "Interface\\AddOns\\larthUnitFrames\\font.ttf"
 
-LarthUnitFrames.round = function(number, decimals)
+LarthUF.target = {}
+LarthUF.player = {}
+LarthUF.font = "Interface\\AddOns\\LarthUnitFrames\\font.ttf"
+
+LarthUF.round = function(number, decimals)
 	return tonumber((("%%.%df"):format(decimals)):format(number))
 end
 
-LarthUnitFrames.textBar = function(health)
+LarthUF.textBar = function(health)
 	local derString = ""
-	local lifef = LarthUnitFrames.round(health, 0)
+	local lifef = LarthUF.round(health, 0)
 	for i=0, 100, 10 do
 		if lifef >= i and lifef < i+10 then
 			derString = derString..format("|cff%s%s|r", "ff0000", lifef)
@@ -105,34 +106,34 @@ LarthUnitFrames.textBar = function(health)
 	return derString
 end
 
-LarthUnitFrames.setText = function (unit, text, position, size)
-	LarthUnitFrames[unit][text] = LarthUnitFrames[unit].Frame:CreateFontString(nil, "OVERLAY")
-	LarthUnitFrames[unit][text]:SetPoint(position)
-	LarthUnitFrames[unit][text]:SetFont(LarthUnitFrames.font, size, "OUTLINE")
-	LarthUnitFrames[unit][text]:SetTextColor(1, 1, 1)
+LarthUF.setText = function (unit, text, position, size)
+	LarthUF[unit][text] = LarthUF[unit].Frame:CreateFontString(nil, "OVERLAY")
+	LarthUF[unit][text]:SetPoint(position)
+	LarthUF[unit][text]:SetFont(LarthUF.font, size, "OUTLINE")
+	LarthUF[unit][text]:SetTextColor(1, 1, 1)
 end
 
 -- set the health texts
-LarthUnitFrames.setHealth = function (unit)
+LarthUF.setHealth = function (unit)
 	local health = UnitHealth(unit)
 	local maxHealth = UnitHealthMax(unit)
 	local percent = 100*health/maxHealth
-	LarthUnitFrames[unit].Health:SetText(LarthUnitFrames.textBar(percent))
-	LarthUnitFrames[unit].HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
+	LarthUF[unit].Health:SetText(LarthUF.textBar(percent))
+	LarthUF[unit].HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
 	if health > 9999 then
-		LarthUnitFrames[unit].HealthAbs:SetText(LarthUnitFrames.round(health/1000).."k")
+		LarthUF[unit].HealthAbs:SetText(LarthUF.round(health/1000).."k")
 	else
-		LarthUnitFrames[unit].HealthAbs:SetText(health)
-	end		
+		LarthUF[unit].HealthAbs:SetText(health)
+	end
 end
 
 -- set the power texts
-LarthUnitFrames.setPower = function(unit)
+LarthUF.setPower = function(unit)
 	local power = UnitPower(unit)
 	local maxpower = UnitPowerMax(unit)
 	local percent = 100*power/maxpower
-	LarthUnitFrames[unit].PowerAbs:SetText(power)
-	LarthUnitFrames[unit].Power:SetText(LarthUnitFrames.textBar(percent))
+	LarthUF[unit].PowerAbs:SetText(power)
+	LarthUF[unit].Power:SetText(LarthUF.textBar(percent))
 end
 local function trimUnitName(unitName)
 	local derString = ""
@@ -140,9 +141,9 @@ local function trimUnitName(unitName)
 		return unitName
 	else
 		for x in string.gmatch(unitName, "[^%s]+") do
-			if strlen(x) > 10 then 
+			if strlen(x) > 10 then
 				derString = derString..strsub(x, 1, 7)..". "
-			else 
+			else
 				derString = derString..x.." "
 			end
 		end
@@ -164,18 +165,18 @@ local function runeColoring(runeType)
 end
 
 
-LarthUnitFrames.Start = CreateFrame("Frame")
+LarthUF.Start = CreateFrame("Frame")
 
-LarthUnitFrames.Start:RegisterEvent("VARIABLES_LOADED")
+LarthUF.Start:RegisterEvent("VARIABLES_LOADED")
 
-LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
+LarthUF.Start:SetScript("OnEvent", function(self, event, ...)
 	local unit = ...
 	if (event == "VARIABLES_LOADED") then
 		-- make those proc indikaters fit between player and target frames
 		SpellActivationOverlayFrame:SetScale(0.6);
 		local localizedClass, englishClass, classIndex = UnitClass("player")
-		LarthUnitFrames.target.Watch = LarthUnitFrames.Classes[englishClass].Debuff
-		LarthUnitFrames.player.Watch = LarthUnitFrames.Classes[englishClass].Buff
+		LarthUF.target.Watch = LarthUF.Classes[englishClass].Debuff
+		LarthUF.player.Watch = LarthUF.Classes[englishClass].Buff
 		-- hide the blizzard frames
 		PlayerFrame:Hide()
         PlayerFrame:UnregisterAllEvents()
@@ -187,27 +188,42 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 		RuneFrame:Hide()
 
 		-- holy power, chi (hopefully)
-		if (LarthUnitFrames.Classes[englishClass].Special) then
-			LarthUnitFrames.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
+		if (LarthUF.Classes[englishClass].Special) then
+			LarthUF.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
 				local tempString = ""
-				local power = UnitPower("player" , LarthUnitFrames.Classes[englishClass].Special);
+				local power = UnitPower("player" , LarthUF.Classes[englishClass].Special);
 				if power > 0 then
 					for i = 1, power, 1 do
 						tempString = tempString.."# "
 					end
 				end
-				LarthUnitFrames.Special.Text:SetText(tempString)
+				LarthUF.Special.Text:SetText(tempString)
 			end)
 		end
-		
+
+-- Class Customization Start ---------------------------------------------------
+		if (classIndex == 1) then
+		elseif (classIndex == 2) then
+		elseif (classIndex == 3) then
+		elseif (classIndex == 4) then
+			LarthUF.ROGUE.Init()
+		elseif (classIndex == 5) then
+		elseif (classIndex == 6) then
+		elseif (classIndex == 7) then
+		elseif (classIndex == 8) then
+		elseif (classIndex == 9) then
+		elseif (classIndex == 10) then
+		elseif (classIndex == 11) then
+		end
+-- Class Customization End -----------------------------------------------------
 		-- some bad code here
 		if (classIndex == 6) then
-			LarthUnitFrames.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
+			LarthUF.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
 			local tempString = "";
-			for i=1, 6, 1 do				
+			for i=1, 6, 1 do
 				local start, duration, runeReady = GetRuneCooldown(i)
 				runeType = GetRuneType(i)
-				local cooldown = LarthUnitFrames.round(duration-GetTime()+start)
+				local cooldown = LarthUF.round(duration-GetTime()+start)
 				if cooldown > 9 or cooldown < 0 then
 					cooldown = "_"
 				end
@@ -217,23 +233,23 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
 					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), cooldown.." ")
 				end
 			end
-			LarthUnitFrames.Special.Text:SetText(tempString)
+			LarthUF.Special.Text:SetText(tempString)
 			end)
 		end
 
-		if ((classIndex == 4) or (classIndex == 11)) then 
-			LarthUnitFrames.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
+		if ((classIndex == 4) or (classIndex == 11)) then
+			LarthUF.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
                 local countAnt = select(4, UnitAura("player", "Anticipation"))
 				local comboPoints = GetComboPoints("player")
                 local strText = {}
                 local strFormat = "|cff%s%s|cff%s%s|r"
                 local strColor = {}
-                        
+
                 local strAnt = ""
                 local strCombo = ""
-                
+
                 if countAnt == nil then countAnt = 0 end
-                
+
                 for i=1, comboPoints, 1 do
                     if countAnt >= i then
                         strAnt = strAnt.." # "
@@ -241,7 +257,7 @@ LarthUnitFrames.Start:SetScript("OnEvent", function(self, event, ...)
                         strCombo = strCombo.." # "
                     end
                 end
-                LarthUnitFrames.Special.Text:SetText(format("|cff%s%s|cff%s%s|r", "ffffff", strCombo, "ff0000", strAnt))
+                LarthUF.Special.Text:SetText(format("|cff%s%s|cff%s%s|r", "ffffff", strCombo, "ff0000", strAnt))
 			end)
 		end
 	end
@@ -251,30 +267,30 @@ end)
 -- Create Target of Target frame
 -- -----------------------------------------------------------------------------
 
-LarthUnitFrames.targettarget = {}
-LarthUnitFrames.targettarget.Frame = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
-LarthUnitFrames.targettarget.Frame:RegisterForClicks("LeftButtonUp")
-LarthUnitFrames.targettarget.Frame:SetWidth(100)
-LarthUnitFrames.targettarget.Frame:SetHeight(30)
-LarthUnitFrames.targettarget.Frame:SetPoint("CENTER", 450, 0)
-LarthUnitFrames.targettarget.Frame:SetAttribute('type1', 'target')
-LarthUnitFrames.targettarget.Frame:SetAttribute('unit', "targettarget")
+LarthUF.targettarget = {}
+LarthUF.targettarget.Frame = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
+LarthUF.targettarget.Frame:RegisterForClicks("LeftButtonUp")
+LarthUF.targettarget.Frame:SetWidth(100)
+LarthUF.targettarget.Frame:SetHeight(30)
+LarthUF.targettarget.Frame:SetPoint("CENTER", 450, 0)
+LarthUF.targettarget.Frame:SetAttribute('type1', 'target')
+LarthUF.targettarget.Frame:SetAttribute('unit', "targettarget")
 
-LarthUnitFrames.setText("targettarget", "Name", "TOPLEFT", 18)
-LarthUnitFrames.setText("targettarget", "Health", "BOTTOMLEFT", 18)
+LarthUF.setText("targettarget", "Name", "TOPLEFT", 18)
+LarthUF.setText("targettarget", "Health", "BOTTOMLEFT", 18)
 
 
-LarthUnitFrames.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)
-	if UnitExists("targettarget") then 
+LarthUF.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)
+	if UnitExists("targettarget") then
 		local health = UnitHealth("targettarget")
 		local maxHealth = UnitHealthMax("targettarget")
-		LarthUnitFrames.targettarget.Health:SetText(LarthUnitFrames.round(100*health/maxHealth, 0))
+		LarthUF.targettarget.Health:SetText(LarthUF.round(100*health/maxHealth, 0))
 		local class, classFileName = UnitClass("targettarget")
 		local color = RAID_CLASS_COLORS[classFileName]
-		LarthUnitFrames.targettarget.Name:SetText(format("|cff%s%s|r", strsub(color.colorStr, 3, 8), trimUnitName(UnitName("targettarget"))))
+		LarthUF.targettarget.Name:SetText(format("|cff%s%s|r", strsub(color.colorStr, 3, 8), trimUnitName(UnitName("targettarget"))))
 	else
-		LarthUnitFrames.targettarget.Name:SetText("")
-		LarthUnitFrames.targettarget.Health:SetText("")
+		LarthUF.targettarget.Name:SetText("")
+		LarthUF.targettarget.Health:SetText("")
 	end
 end)
 
@@ -282,15 +298,15 @@ end)
 -- -----------------------------------------------------------------------------
 -- Create Special blah blah frame
 -- -----------------------------------------------------------------------------
-LarthUnitFrames.Special = {}
-LarthUnitFrames.Special.Frame = CreateFrame("Frame", "larsClassSpecial", UIParent)
-LarthUnitFrames.Special.Frame:SetFrameLevel(3)
-LarthUnitFrames.Special.Frame:SetWidth(50)
-LarthUnitFrames.Special.Frame:SetHeight(50)
-LarthUnitFrames.Special.Frame:SetPoint("CENTER", 0, -100)
-LarthUnitFrames.Special.Frame:Show()
+LarthUF.Special = {}
+LarthUF.Special.Frame = CreateFrame("Frame", "larsClassSpecial", UIParent)
+LarthUF.Special.Frame:SetFrameLevel(3)
+LarthUF.Special.Frame:SetWidth(50)
+LarthUF.Special.Frame:SetHeight(50)
+LarthUF.Special.Frame:SetPoint("CENTER", 0, -100)
+LarthUF.Special.Frame:Show()
 
-LarthUnitFrames.Special.Text = LarthUnitFrames.Special.Frame:CreateFontString(nil, "OVERLAY")
-LarthUnitFrames.Special.Text:SetPoint("CENTER")
-LarthUnitFrames.Special.Text:SetFont(LarthUnitFrames.font, 20, "OUTLINE")
-LarthUnitFrames.Special.Text:SetTextColor(1, 1, 1)
+LarthUF.Special.Text = LarthUF.Special.Frame:CreateFontString(nil, "OVERLAY")
+LarthUF.Special.Text:SetPoint("CENTER")
+LarthUF.Special.Text:SetFont(LarthUF.font, 20, "OUTLINE")
+LarthUF.Special.Text:SetTextColor(1, 1, 1)

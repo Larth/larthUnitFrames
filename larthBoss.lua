@@ -13,35 +13,35 @@
  Boss5TargetFrame:Hide()
 
  for i = 1, 5, 1 do
-	 LarthUnitFrames["boss"..i] = {}
-	 LarthUnitFrames["boss"..i].Frame = CreateFrame("Button", "button_boss"..i, UIParent, "SecureUnitButtonTemplate ");
-	 LarthUnitFrames["boss"..i].Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	 LarthUnitFrames["boss"..i].Frame:SetAttribute('type1', 'target')
-	 LarthUnitFrames["boss"..i].Frame:SetAttribute('unit', "boss"..i)
-	 LarthUnitFrames["boss"..i].Frame:SetWidth(50)
-	 LarthUnitFrames["boss"..i].Frame:SetHeight(40)
-	 LarthUnitFrames["boss"..i].Frame:Show()
-	 LarthUnitFrames["boss"..i].Frame:SetPoint("RIGHT", -20, 100-i*50)
-	 LarthUnitFrames.setText("boss"..i, "Name", "TOPRIGHT", 20)
-	 LarthUnitFrames.setText("boss"..i, "Health", "BOTTOMLEFT", 20)
-	 LarthUnitFrames.setText("boss"..i, "Power", "BOTTOMRIGHT", 20)
+	 LarthUF["boss"..i] = {}
+	 LarthUF["boss"..i].Frame = CreateFrame("Button", "button_boss"..i, UIParent, "SecureUnitButtonTemplate ");
+	 LarthUF["boss"..i].Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	 LarthUF["boss"..i].Frame:SetAttribute('type1', 'target')
+	 LarthUF["boss"..i].Frame:SetAttribute('unit', "boss"..i)
+	 LarthUF["boss"..i].Frame:SetWidth(50)
+	 LarthUF["boss"..i].Frame:SetHeight(40)
+	 LarthUF["boss"..i].Frame:Show()
+	 LarthUF["boss"..i].Frame:SetPoint("RIGHT", -20, 100-i*50)
+	 LarthUF.setText("boss"..i, "Name", "TOPRIGHT", 20)
+	 LarthUF.setText("boss"..i, "Health", "BOTTOMLEFT", 20)
+	 LarthUF.setText("boss"..i, "Power", "BOTTOMRIGHT", 20)
 
-	 LarthUnitFrames["boss"..i].Frame:SetScript("OnUpdate", function(self, elapsed)
+	 LarthUF["boss"..i].Frame:SetScript("OnUpdate", function(self, elapsed)
 		 if UnitExists("boss"..i) then
-			 LarthUnitFrames["boss"..i].Name:SetText(UnitName("boss"..i))
+			 LarthUF["boss"..i].Name:SetText(UnitName("boss"..i))
 			 local health = UnitHealth("boss"..i)
 			 local maxHealth = UnitHealthMax("boss"..i)
-			 local percent = LarthUnitFrames.round(100*health/maxHealth, 0)
-			 LarthUnitFrames["boss"..i].Health:SetText(LarthUnitFrames.round(percent))
+			 local percent = LarthUF.round(100*health/maxHealth, 0)
+			 LarthUF["boss"..i].Health:SetText(LarthUF.round(percent))
 			 local power = UnitPower("boss"..i)
 			 if (power > 0) then
 				 local maxPower = UnitPowerMax("boss"..i)
-				 LarthUnitFrames["boss"..i].Power:SetText(LarthUnitFrames.round(100*power/maxPower))
+				 LarthUF["boss"..i].Power:SetText(LarthUF.round(100*power/maxPower))
 			 end
 		 else
-			 LarthUnitFrames["boss"..i].Health:SetText("")
-			 LarthUnitFrames["boss"..i].Name:SetText("")
-			 LarthUnitFrames["boss"..i].Power:SetText("")
+			 LarthUF["boss"..i].Health:SetText("")
+			 LarthUF["boss"..i].Name:SetText("")
+			 LarthUF["boss"..i].Power:SetText("")
 		 end
 	 end)
  end
