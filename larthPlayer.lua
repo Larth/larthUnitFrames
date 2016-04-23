@@ -20,8 +20,8 @@ LarthUF.player.Button.menu = function(self, unit, button, actionType)
 	end
 
 -- this code is so copy/paste
-LarthUF.setText("player", "Health", "LEFT", 20)
-LarthUF.setText("player", "HealthAbs", "RIGHT", 20)
+LarthUF.setText("player", "Health", "LEFT", 18)
+LarthUF.setText("player", "HealthAbs", "RIGHT", 18)
 LarthUF.setText("player", "PowerAbs", "BOTTOMRIGHT", 14)
 LarthUF.setText("player", "Power", "BOTTOMLEFT", 14)
 LarthUF.setText("player", "Name", "TOPLEFT", 18)

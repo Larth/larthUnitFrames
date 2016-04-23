@@ -87,7 +87,7 @@ LarthUF = {
 
 LarthUF.target = {}
 LarthUF.player = {}
-LarthUF.font = "Interface\\AddOns\\LarthUnitFrames\\font.ttf"
+LarthUF.font = "Fonts\\ARIALN.TTF"
 
 LarthUF.round = function(number, decimals)
 	return tonumber((("%%.%df"):format(decimals)):format(number))
@@ -276,8 +276,8 @@ LarthUF.targettarget.Frame:SetPoint("CENTER", 450, 0)
 LarthUF.targettarget.Frame:SetAttribute('type1', 'target')
 LarthUF.targettarget.Frame:SetAttribute('unit', "targettarget")
 
-LarthUF.setText("targettarget", "Name", "TOPLEFT", 18)
-LarthUF.setText("targettarget", "Health", "BOTTOMLEFT", 18)
+LarthUF.setText("targettarget", "Name", "TOPLEFT", 16)
+LarthUF.setText("targettarget", "Health", "BOTTOMLEFT", 16)
 
 
 LarthUF.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)

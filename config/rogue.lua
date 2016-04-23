@@ -15,11 +15,14 @@ LarthUF.ROGUE.Init = function()
   LarthNotify:RegisterEvent("PLAYER_ENTERING_WORLD")
   LarthNotify:RegisterEvent("RAID_INSTANCE_WELCOME")
   LarthNotify:SetScript("OnEvent", function(self, event, ...)
-     local needed = select(1, UnitAura("player", "Deadly Poison"))
-     if needed then
-       LarthNotify:Hide()
-     else
-       LarthNotify:Show()
-     end
+    if select(1,UnitAura("player", "Instant Poison")) then
+      LarthNotify:Hide();
+    elseif select(1, UnitAura("player", "Wound Poison")) then
+      LarthNotify:Hide();
+    elseif select(1, UnitAura("player", "Deadly Poison")) then
+      LarthNotify:Hide();
+    else
+      LarthNotify:Show();
+    end
   end)
 end

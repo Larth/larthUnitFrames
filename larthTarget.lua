@@ -19,8 +19,8 @@ LarthUF.target.Button.menu = function(self, unit, button, actionType)
 		ToggleDropDownMenu(1, 1, TargetFrameDropDown, LarthUF.target.Button, 0 ,0)
 	end
 -- this code is so copy/paste
-LarthUF.setText("target", "Health", "RIGHT", 20)
-LarthUF.setText("target", "HealthAbs", "LEFT", 20)
+LarthUF.setText("target", "Health", "RIGHT", 18)
+LarthUF.setText("target", "HealthAbs", "LEFT", 18)
 LarthUF.setText("target", "PowerAbs", "BOTTOMLEFT", 14)
 LarthUF.setText("target", "Power", "BOTTOMRIGHT", 14)
 LarthUF.setText("target", "Name", "TOPRIGHT", 18)
