@@ -3,14 +3,14 @@ LarthUF.target.Frame = CreateFrame("Button", "larthTargetFrame", UIParent, "Secu
 LarthUF.target.Frame:SetAttribute("unit", "target")
 LarthUF.target.Frame:SetWidth(250)
 LarthUF.target.Frame:SetHeight(50)
-LarthUF.target.Frame:SetPoint("CENTER", 250, 0)
+LarthUF.target.Frame:SetPoint("BOTTOM", 350, 0)
 RegisterUnitWatch(LarthUF.target.Frame)
 
 -- dropdown
 LarthUF.target.Button = CreateFrame("Button", "button_target", LarthUF.target.Frame, "SecureActionButtonTemplate ");
 LarthUF.target.Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-LarthUF.target.Button:SetWidth(50)
-LarthUF.target.Button:SetHeight(20)
+LarthUF.target.Button:SetWidth(250)
+LarthUF.target.Button:SetHeight(50)
 LarthUF.target.Button:SetPoint("TOPRIGHT", 0, 0)
 LarthUF.target.Button:SetAttribute('type1', 'target')
 LarthUF.target.Button:SetAttribute('unit', "target")

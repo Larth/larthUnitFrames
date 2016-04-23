@@ -120,7 +120,9 @@ LarthUF.setHealth = function (unit)
 	local percent = 100*health/maxHealth
 	LarthUF[unit].Health:SetText(LarthUF.textBar(percent))
 	LarthUF[unit].HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
-	if health > 9999 then
+	if health > 999999 then
+		LarthUF[unit].HealthAbs:SetText(LarthUF.round(health/1000000).."M")
+	elseif health > 9999 then
 		LarthUF[unit].HealthAbs:SetText(LarthUF.round(health/1000).."k")
 	else
 		LarthUF[unit].HealthAbs:SetText(health)
@@ -272,12 +274,12 @@ LarthUF.targettarget.Frame = CreateFrame("Button", "button_tot", UIParent, "Secu
 LarthUF.targettarget.Frame:RegisterForClicks("LeftButtonUp")
 LarthUF.targettarget.Frame:SetWidth(100)
 LarthUF.targettarget.Frame:SetHeight(30)
-LarthUF.targettarget.Frame:SetPoint("CENTER", 450, 0)
+LarthUF.targettarget.Frame:SetPoint("BOTTOM", 425, 60)
 LarthUF.targettarget.Frame:SetAttribute('type1', 'target')
 LarthUF.targettarget.Frame:SetAttribute('unit', "targettarget")
 
-LarthUF.setText("targettarget", "Name", "TOPLEFT", 16)
-LarthUF.setText("targettarget", "Health", "BOTTOMLEFT", 16)
+LarthUF.setText("targettarget", "Name", "TOPRIGHT", 16)
+LarthUF.setText("targettarget", "Health", "BOTTOMRIGHT", 16)
 
 
 LarthUF.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)
@@ -303,7 +305,7 @@ LarthUF.Special.Frame = CreateFrame("Frame", "larsClassSpecial", UIParent)
 LarthUF.Special.Frame:SetFrameLevel(3)
 LarthUF.Special.Frame:SetWidth(50)
 LarthUF.Special.Frame:SetHeight(50)
-LarthUF.Special.Frame:SetPoint("CENTER", 0, -100)
+LarthUF.Special.Frame:SetPoint("BOTTOM", 0, 150)
 LarthUF.Special.Frame:Show()
 
 LarthUF.Special.Text = LarthUF.Special.Frame:CreateFontString(nil, "OVERLAY")

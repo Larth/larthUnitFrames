@@ -2,15 +2,15 @@ LarthUF.player.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent)
 LarthUF.player.Frame:EnableMouse(false)
 LarthUF.player.Frame:SetWidth(250)
 LarthUF.player.Frame:SetHeight(50)
-LarthUF.player.Frame:SetPoint("CENTER", -250, 0)
+LarthUF.player.Frame:SetPoint("BOTTOM", -350, 0)
 LarthUF.player.Frame:SetAttribute("unit", "player")
 RegisterUnitWatch(LarthUF.player.Frame)
 
 -- dropdown menu somewhere near the name
 LarthUF.player.Button = CreateFrame("Button", "button_player", LarthUF.player.Frame, "SecureActionButtonTemplate ");
 LarthUF.player.Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-LarthUF.player.Button:SetWidth(50)
-LarthUF.player.Button:SetHeight(20)
+LarthUF.player.Button:SetWidth(250)
+LarthUF.player.Button:SetHeight(50)
 LarthUF.player.Button:SetPoint("TOPLEFT", 0, 0)
 LarthUF.player.Button:SetAttribute('type1', 'target')
 LarthUF.player.Button:SetAttribute('unit', "player")
@@ -80,7 +80,7 @@ LarthUF.pet.Frame = CreateFrame("Button", "larthPetFrame", UIParent, "SecureUnit
 LarthUF.pet.Frame:SetAttribute("unit", "pet")
 LarthUF.pet.Frame:SetWidth(100)
 LarthUF.pet.Frame:SetHeight(50)
-LarthUF.pet.Frame:SetPoint("CENTER", -250, -100)
+LarthUF.pet.Frame:SetPoint("BOTTOM", -425, 60)
 RegisterUnitWatch(LarthUF.pet.Frame)
 
 LarthUF.setText("pet", "Health", "LEFT", 20)
