@@ -274,7 +274,7 @@ LarthUF.targettarget.Frame = CreateFrame("Button", "button_tot", UIParent, "Secu
 LarthUF.targettarget.Frame:RegisterForClicks("LeftButtonUp")
 LarthUF.targettarget.Frame:SetWidth(100)
 LarthUF.targettarget.Frame:SetHeight(30)
-LarthUF.targettarget.Frame:SetPoint("BOTTOM", 425, 60)
+LarthUF.targettarget.Frame:SetPoint("BOTTOM", 425, 260)
 LarthUF.targettarget.Frame:SetAttribute('type1', 'target')
 LarthUF.targettarget.Frame:SetAttribute('unit', "targettarget")
 
@@ -286,7 +286,9 @@ LarthUF.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("targettarget") then
 		local health = UnitHealth("targettarget")
 		local maxHealth = UnitHealthMax("targettarget")
-		LarthUF.targettarget.Health:SetText(LarthUF.round(100*health/maxHealth, 0))
+		local percent = LarthUF.round(100*health/maxHealth, 0)
+		LarthUF.targettarget.Health:SetText(percent)
+		LarthUF.targettarget.Health:SetTextColor((1-percent/100)*2, percent/50, 0)
 		local class, classFileName = UnitClass("targettarget")
 		local color = RAID_CLASS_COLORS[classFileName]
 		LarthUF.targettarget.Name:SetText(format("|cff%s%s|r", strsub(color.colorStr, 3, 8), trimUnitName(UnitName("targettarget"))))

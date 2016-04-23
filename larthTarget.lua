@@ -3,7 +3,7 @@ LarthUF.target.Frame = CreateFrame("Button", "larthTargetFrame", UIParent, "Secu
 LarthUF.target.Frame:SetAttribute("unit", "target")
 LarthUF.target.Frame:SetWidth(250)
 LarthUF.target.Frame:SetHeight(50)
-LarthUF.target.Frame:SetPoint("BOTTOM", 350, 0)
+LarthUF.target.Frame:SetPoint("BOTTOM", 350, 200)
 RegisterUnitWatch(LarthUF.target.Frame)
 
 -- dropdown
