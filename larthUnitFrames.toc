@@ -1,8 +1,8 @@
 ## Interface: 60200
-## Version: 0.2.6
+## Version: 0.3.2
 ## Title: larthUnitFrames
 ## Notes: Text based Unit Frames
-## Author: Larth
+## Author: Lars Thevissen
 
 larthUnitFrames.lua
 larthRaid.lua

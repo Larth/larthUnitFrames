@@ -22,14 +22,19 @@ LarthUF.ROGUE.Init = function()
   LarthNotify:RegisterEvent("PLAYER_ENTERING_WORLD")
   LarthNotify:RegisterEvent("RAID_INSTANCE_WELCOME")
   LarthNotify:SetScript("OnEvent", function(self, event, ...)
+    local hasPoison = false
     if select(1,UnitAura("player", "Instant Poison")) then
-      LarthNotify:Hide();
+      hasPoison = true
     elseif select(1, UnitAura("player", "Wound Poison")) then
-      LarthNotify:Hide();
+      hasPoison = true
     elseif select(1, UnitAura("player", "Deadly Poison")) then
-      LarthNotify:Hide();
-    else
-      LarthNotify:Show();
+      hasPoison = true
+    end
+    if LarthNotify:IsShown() and hasPoison then
+      LarthNotify:Hide()
+    end
+    if not LarthNotify:IsShown() and not hasPoison then
+      LarthNotify:Show()
     end
   end)
 end

@@ -9,7 +9,7 @@
  larthRaidFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED")
  larthRaidFrame:SetScript("OnEvent", function(self, event, ...)
 	 for i = 1, 40, 1 do
-		 if UnitExists("raid"..i) then
+		 if UnitExists("raid"..i) and UnitGroupRolesAssigned("player") ~= "HEALER" then
 			 LarthUF["raid"..i].Frame:Show()
 		 else
 			 LarthUF["raid"..i].Frame:Hide()
@@ -49,9 +49,7 @@
      LarthUF["raid"..i].Frame:RegisterEvent("UNIT_NAME_UPDATE")
 
 	 LarthUF["raid"..i].Frame:SetScript("OnEvent", function(self, event, ...)
-     if UnitGroupRolesAssigned("player")== "HEALER" then
-       LarthUF["raid"..i].Frame:Hide()
-     elseif UnitExists("raid"..i) then
+     if UnitExists("raid"..i) then
 			 local class, classFileName = UnitClass("raid"..i)
 			 local role = UnitGroupRolesAssigned("raid"..i)
 			 local derSring = ""
@@ -87,7 +85,6 @@
 		 end
 	 end)
 
-	 -- don't want to accidently hit the heal with tricks, right?
 	 LarthUF["raid"..i].Frame:SetScript("OnEnter", function(self, elapsed)
 		 LarthUF["raid"..i].Name:SetTextColor(0.7, 0.7, 0.7)
 	 end)
