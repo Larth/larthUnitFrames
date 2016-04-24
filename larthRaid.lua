@@ -30,14 +30,14 @@
 	 LarthUF["raid"..i].Frame:SetAttribute('type2', 'spell')
 	 -- yeah it's only tricks of the trade (Schurkenhandel) here, go cry if you're no rogue
 	 LarthUF["raid"..i].Frame:SetAttribute('spell', "Tricks of the Trade")
-	 LarthUF["raid"..i].Frame:SetWidth(100)
+	 LarthUF["raid"..i].Frame:SetWidth(120)
 	 LarthUF["raid"..i].Frame:SetHeight(20)
 	 -- Position the Frame
 	 --
 	 if i <= 25 then
 		 LarthUF["raid"..i].Frame:SetPoint("TOPLEFT", 15, -300-i*20)
 	 else
-		 LarthUF["raid"..i].Frame:SetPoint("TOPLEFT", 120, -300-(i-25)*20)
+		 LarthUF["raid"..i].Frame:SetPoint("TOPLEFT", 150, -300-(i-25)*20)
 	 end
 	 LarthUF["raid"..i].Frame:Hide()
 
