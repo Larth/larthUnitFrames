@@ -1,9 +1,7 @@
 LarthUF = {
 	Classes = {
 		DEATHKNIGHT = {
-			Buff = {
-                {57330, "0099ff"} --horn/remove
-            },
+			Buff = {  },
 			Debuff = {
                 {55095, "6666ff"}, --frost fever
                 {55078, "00ff00"}  --blood plague
@@ -307,7 +305,7 @@ LarthUF.Special.Frame = CreateFrame("Frame", "larsClassSpecial", UIParent)
 LarthUF.Special.Frame:SetFrameLevel(3)
 LarthUF.Special.Frame:SetWidth(50)
 LarthUF.Special.Frame:SetHeight(50)
-LarthUF.Special.Frame:SetPoint("BOTTOM", 0, 150)
+LarthUF.Special.Frame:SetPoint("BOTTOM", 0, 350)
 LarthUF.Special.Frame:Show()
 
 LarthUF.Special.Text = LarthUF.Special.Frame:CreateFontString(nil, "OVERLAY")
