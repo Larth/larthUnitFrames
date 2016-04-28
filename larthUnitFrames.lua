@@ -1,7 +1,9 @@
 LarthUF = {
 	Classes = {
 		DEATHKNIGHT = {
-			Buff = {  },
+			Buff = {
+                {57330, "0099ff"} --horn/remove
+            },
 			Debuff = {
                 {55095, "6666ff"}, --frost fever
                 {55078, "00ff00"}  --blood plague
@@ -135,7 +137,7 @@ LarthUF.setPower = function(unit)
 	LarthUF[unit].PowerAbs:SetText(power)
 	LarthUF[unit].Power:SetText(LarthUF.textBar(percent))
 end
-local function trimUnitName(unitName)
+LarthUF.trimUnitName = function(unitName)
 	local derString = ""
 	if (strlen(unitName) < 20) then
 		return unitName
@@ -260,39 +262,6 @@ LarthUF.Start:SetScript("OnEvent", function(self, event, ...)
                 LarthUF.Special.Text:SetText(format("|cff%s%s|cff%s%s|r", "ffffff", strCombo, "ff0000", strAnt))
 			end)
 		end
-	end
-end)
-
--- -----------------------------------------------------------------------------
--- Create Target of Target frame
--- -----------------------------------------------------------------------------
-
-LarthUF.targettarget = {}
-LarthUF.targettarget.Frame = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
-LarthUF.targettarget.Frame:RegisterForClicks("LeftButtonUp")
-LarthUF.targettarget.Frame:SetWidth(100)
-LarthUF.targettarget.Frame:SetHeight(30)
-LarthUF.targettarget.Frame:SetPoint("BOTTOM", 425, 260)
-LarthUF.targettarget.Frame:SetAttribute('type1', 'target')
-LarthUF.targettarget.Frame:SetAttribute('unit', "targettarget")
-
-LarthUF.setText("targettarget", "Name", "TOPRIGHT", 16)
-LarthUF.setText("targettarget", "Health", "BOTTOMRIGHT", 16)
-
-
-LarthUF.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)
-	if UnitExists("targettarget") then
-		local health = UnitHealth("targettarget")
-		local maxHealth = UnitHealthMax("targettarget")
-		local percent = LarthUF.round(100*health/maxHealth, 0)
-		LarthUF.targettarget.Health:SetText(percent)
-		LarthUF.targettarget.Health:SetTextColor((1-percent/100)*2, percent/50, 0)
-		local class, classFileName = UnitClass("targettarget")
-		local color = RAID_CLASS_COLORS[classFileName]
-		LarthUF.targettarget.Name:SetText(format("|cff%s%s|r", strsub(color.colorStr, 3, 8), trimUnitName(UnitName("targettarget"))))
-	else
-		LarthUF.targettarget.Name:SetText("")
-		LarthUF.targettarget.Health:SetText("")
 	end
 end)
 

@@ -1,25 +1,21 @@
-LarthUF.player.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent)
-LarthUF.player.Frame:EnableMouse(false)
+LarthUF.player.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent, "SecureUnitButtonTemplate")
 LarthUF.player.Frame:SetWidth(250)
 LarthUF.player.Frame:SetHeight(50)
 LarthUF.player.Frame:SetPoint("BOTTOM", -350, 200)
+
+-- Make the frame clickable and add context menu
+LarthUF.player.Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 LarthUF.player.Frame:SetAttribute("unit", "player")
+LarthUF.player.Frame:SetAttribute("type1", "target")
+LarthUF.player.Frame:SetAttribute("type2", "menu")
+LarthUF.player.Frame.menu = function(self, unit, button, actionType)
+	ToggleDropDownMenu(1, nil, PlayerFrameDropDown, LarthUF.player.Frame, 0, 0)
+end
+-- remind yourself what this is for
 RegisterUnitWatch(LarthUF.player.Frame)
 
--- dropdown menu somewhere near the name
-LarthUF.player.Button = CreateFrame("Button", "button_player", LarthUF.player.Frame, "SecureActionButtonTemplate ");
-LarthUF.player.Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-LarthUF.player.Button:SetWidth(250)
-LarthUF.player.Button:SetHeight(50)
-LarthUF.player.Button:SetPoint("TOPLEFT", 0, 0)
-LarthUF.player.Button:SetAttribute('type1', 'target')
-LarthUF.player.Button:SetAttribute('unit', "player")
-LarthUF.player.Button:SetAttribute('type2', 'menu')
-LarthUF.player.Button.menu = function(self, unit, button, actionType)
-		ToggleDropDownMenu(1, 1, PlayerFrameDropDown, LarthUF.player.Button, 0 ,0)
-	end
 
--- this code is so copy/paste
+-- place the texts inside the frame
 LarthUF.setText("player", "Health", "LEFT", 18)
 LarthUF.setText("player", "HealthAbs", "RIGHT", 18)
 LarthUF.setText("player", "PowerAbs", "BOTTOMRIGHT", 14)
@@ -72,40 +68,4 @@ LarthUF.player.Frame:SetScript("OnEvent", function(self, event, ...)
 		LarthUF.setHealth("player")
 		LarthUF.setPower("player")
 	end
-end)
-
--- quick pet frame
-LarthUF.pet = {}
-LarthUF.pet.Frame = CreateFrame("Button", "larthPetFrame", UIParent, "SecureUnitButtonTemplate")
-LarthUF.pet.Frame:SetAttribute("unit", "pet")
-LarthUF.pet.Frame:SetWidth(100)
-LarthUF.pet.Frame:SetHeight(30)
-LarthUF.pet.Frame:SetPoint("BOTTOM", -425, 260)
-RegisterUnitWatch(LarthUF.pet.Frame)
-
-LarthUF.setText("pet", "Health", "BOTTOMLEFT", 16)
-LarthUF.setText("pet", "Name", "TOPLEFT", 16)
-
-LarthUF.pet.Frame:RegisterEvent("UNIT_HEALTH_FREQUENT")
-LarthUF.pet.Frame:RegisterEvent("UNIT_PET")
-LarthUF.pet.Frame:RegisterEvent("UNIT_AURA")
-
-LarthUF.pet.Frame:SetScript("OnEvent", function(self, event, ...)
-    if (event == "UNIT_AURA") then
-			-- Green name with Mend Pet Buff active
-        local countAnt = select(7, UnitAura("pet", "Mend Pet"))
-        if(countAnt) then
-            LarthUF["pet"].Name:SetTextColor(0,1,0)
-        else
-            LarthUF["pet"].Name:SetTextColor(1,1,1)
-        end
-    elseif (event == "UNIT_PET") then
-			LarthUF.pet.Name:SetText(UnitName("pet"))
-    end
-		-- Update Health
-    local health = UnitHealth("pet")
-    local maxHealth = UnitHealthMax("pet")
-    local percent = LarthUF.round(100*health/maxHealth, 0)
-    LarthUF["pet"].Health:SetTextColor((1-percent/100)*2, percent/50, 0)
-    LarthUF["pet"].Health:SetText(percent)
 end)

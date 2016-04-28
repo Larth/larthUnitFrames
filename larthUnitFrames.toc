@@ -1,12 +1,14 @@
 ## Interface: 60200
-## Version: 0.3.2
+## Version: 0.4.2
 ## Title: larthUnitFrames
 ## Notes: Text based Unit Frames
 ## Author: Lars Thevissen
 
 larthUnitFrames.lua
-larthRaid.lua
-larthPlayer.lua
-larthTarget.lua
-larthBoss.lua
-config\rogue.lua
+units\larthRaid.lua
+units\larthPlayer.lua
+units\larthTarget.lua
+units\larthPet.lua
+units\larthBoss.lua
+units\larthToT.lua
+classes\rogue.lua

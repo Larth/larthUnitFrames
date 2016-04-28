@@ -6,18 +6,19 @@ LarthUF.target.Frame:SetHeight(50)
 LarthUF.target.Frame:SetPoint("BOTTOM", 350, 200)
 RegisterUnitWatch(LarthUF.target.Frame)
 
--- dropdown
-LarthUF.target.Button = CreateFrame("Button", "button_target", LarthUF.target.Frame, "SecureActionButtonTemplate ");
-LarthUF.target.Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-LarthUF.target.Button:SetWidth(250)
-LarthUF.target.Button:SetHeight(50)
-LarthUF.target.Button:SetPoint("TOPRIGHT", 0, 0)
-LarthUF.target.Button:SetAttribute('type1', 'target')
-LarthUF.target.Button:SetAttribute('unit', "target")
-LarthUF.target.Button:SetAttribute('type2', 'menu')
-LarthUF.target.Button.menu = function(self, unit, button, actionType)
-		ToggleDropDownMenu(1, 1, TargetFrameDropDown, LarthUF.target.Button, 0 ,0)
-	end
+-- Make the frame clickable and add context menu
+LarthUF.target.Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+LarthUF.target.Frame:SetAttribute("unit", "target")
+LarthUF.target.Frame:SetAttribute("type1", "target")
+LarthUF.target.Frame:SetAttribute("type2", "menu")
+LarthUF.target.Frame.menu = function(self, unit, button, actionType)
+	ToggleDropDownMenu(1, nil, PlayerFrameDropDown, LarthUF.target.Frame, 0, 0)
+end
+
+
+RegisterUnitWatch(LarthUF.target.Frame)
+
+
 -- this code is so copy/paste
 LarthUF.setText("target", "Health", "RIGHT", 18)
 LarthUF.setText("target", "HealthAbs", "LEFT", 18)
