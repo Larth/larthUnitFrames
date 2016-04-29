@@ -1,22 +1,22 @@
-LarthUF.target.Frame = CreateFrame("Button", "larthTargetFrame", UIParent, "SecureUnitButtonTemplate")
---LarthUF.target.Frame:EnableMouse(false)
-LarthUF.target.Frame:SetAttribute("unit", "target")
-LarthUF.target.Frame:SetWidth(250)
-LarthUF.target.Frame:SetHeight(50)
-LarthUF.target.Frame:SetPoint("BOTTOM", 350, 200)
-RegisterUnitWatch(LarthUF.target.Frame)
+LarthUF.Frames.target = CreateFrame("Button", "larthTargetFrame", UIParent, "SecureUnitButtonTemplate")
+--LarthUF.Frames.target:EnableMouse(false)
+LarthUF.Frames.target:SetAttribute("unit", "target")
+LarthUF.Frames.target:SetWidth(250)
+LarthUF.Frames.target:SetHeight(50)
+LarthUF.Frames.target:SetPoint("BOTTOM", 350, 200)
+RegisterUnitWatch(LarthUF.Frames.target)
 
 -- Make the frame clickable and add context menu
-LarthUF.target.Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-LarthUF.target.Frame:SetAttribute("unit", "target")
-LarthUF.target.Frame:SetAttribute("type1", "target")
-LarthUF.target.Frame:SetAttribute("type2", "menu")
-LarthUF.target.Frame.menu = function(self, unit, button, actionType)
-	ToggleDropDownMenu(1, nil, PlayerFrameDropDown, LarthUF.target.Frame, 0, 0)
+LarthUF.Frames.target:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+LarthUF.Frames.target:SetAttribute("unit", "target")
+LarthUF.Frames.target:SetAttribute("type1", "target")
+LarthUF.Frames.target:SetAttribute("type2", "menu")
+LarthUF.Frames.target.menu = function(self, unit, button, actionType)
+	ToggleDropDownMenu(1, nil, PlayerFrameDropDown, LarthUF.Frames.target, 0, 0)
 end
 
 
-RegisterUnitWatch(LarthUF.target.Frame)
+RegisterUnitWatch(LarthUF.Frames.target)
 
 
 -- this code is so copy/paste
@@ -31,7 +31,7 @@ LarthUF.setText("target", "Aura", "TOPLEFT", 14)
 -- show durations of the important buffs/debuffs specified somewhere else
 -- maybe put a timer thing here?
 -- just saw this: there is some cast timer, too.
-LarthUF.target.Frame:SetScript("OnUpdate", function(self, elapsed)
+LarthUF.Frames.target:SetScript("OnUpdate", function(self, elapsed)
 	local spell, _, _, _, _, endTime = UnitCastingInfo("target")
 	if (UnitExists("target")) then
 		if spell then
@@ -58,11 +58,11 @@ end)
 
 
 -- updating health and power when it is needed (works most of the time)
-LarthUF.target.Frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-LarthUF.target.Frame:RegisterEvent("UNIT_HEALTH_FREQUENT")
-LarthUF.target.Frame:RegisterEvent("UNIT_POWER")
+LarthUF.Frames.target:RegisterEvent("PLAYER_TARGET_CHANGED")
+LarthUF.Frames.target:RegisterEvent("UNIT_HEALTH_FREQUENT")
+LarthUF.Frames.target:RegisterEvent("UNIT_POWER")
 
-LarthUF.target.Frame:SetScript("OnEvent", function(self, event, ...)
+LarthUF.Frames.target:SetScript("OnEvent", function(self, event, ...)
 	if (UnitExists("target")) then
 		LarthUF.setHealth("target")
 		LarthUF.setPower("target")

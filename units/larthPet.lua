@@ -1,26 +1,26 @@
 -- quick pet frame
 LarthUF.pet = {}
-LarthUF.pet.Frame = CreateFrame("Button", "larthPetFrame", UIParent, "SecureUnitButtonTemplate")
-LarthUF.pet.Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-LarthUF.pet.Frame:SetAttribute('type1', "target")
-LarthUF.pet.Frame:SetAttribute("unit", "pet")
-LarthUF.pet.Frame:SetAttribute('type2', 'menu')
-LarthUF.pet.Frame.menu = function(self, unit, button, actionType)
-		ToggleDropDownMenu(1, nil, PetFrameDropDown, LarthUF.pet.Frame, 0 ,0)
+LarthUF.Frames.pet = CreateFrame("Button", "larthPetFrame", UIParent, "SecureUnitButtonTemplate")
+LarthUF.Frames.pet:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+LarthUF.Frames.pet:SetAttribute('type1', "target")
+LarthUF.Frames.pet:SetAttribute("unit", "pet")
+LarthUF.Frames.pet:SetAttribute('type2', 'menu')
+LarthUF.Frames.pet.menu = function(self, unit, button, actionType)
+		ToggleDropDownMenu(1, nil, PetFrameDropDown, LarthUF.Frames.pet, 0 ,0)
 	end
-LarthUF.pet.Frame:SetWidth(100)
-LarthUF.pet.Frame:SetHeight(30)
-LarthUF.pet.Frame:SetPoint("BOTTOM", -425, 260)
-RegisterUnitWatch(LarthUF.pet.Frame)
+LarthUF.Frames.pet:SetWidth(100)
+LarthUF.Frames.pet:SetHeight(30)
+LarthUF.Frames.pet:SetPoint("BOTTOM", -425, 260)
+RegisterUnitWatch(LarthUF.Frames.pet)
 
 LarthUF.setText("pet", "Health", "BOTTOMLEFT", 16)
 LarthUF.setText("pet", "Name", "TOPLEFT", 16)
 
-LarthUF.pet.Frame:RegisterEvent("UNIT_HEALTH_FREQUENT")
-LarthUF.pet.Frame:RegisterEvent("UNIT_PET")
-LarthUF.pet.Frame:RegisterEvent("UNIT_AURA")
+LarthUF.Frames.pet:RegisterEvent("UNIT_HEALTH_FREQUENT")
+LarthUF.Frames.pet:RegisterEvent("UNIT_PET")
+LarthUF.Frames.pet:RegisterEvent("UNIT_AURA")
 
-LarthUF.pet.Frame:SetScript("OnEvent", function(self, event, ...)
+LarthUF.Frames.pet:SetScript("OnEvent", function(self, event, ...)
     if (event == "UNIT_AURA") then
 			-- Green name with Mend Pet Buff active
         local countAnt = select(7, UnitAura("pet", "Mend Pet"))

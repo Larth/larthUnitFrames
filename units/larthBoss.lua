@@ -14,19 +14,19 @@
 
  for i = 1, 5, 1 do
 	 LarthUF["boss"..i] = {}
-	 LarthUF["boss"..i].Frame = CreateFrame("Button", "button_boss"..i, UIParent, "SecureUnitButtonTemplate ");
-	 LarthUF["boss"..i].Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	 LarthUF["boss"..i].Frame:SetAttribute('type1', 'target')
-	 LarthUF["boss"..i].Frame:SetAttribute('unit', "boss"..i)
-	 LarthUF["boss"..i].Frame:SetWidth(50)
-	 LarthUF["boss"..i].Frame:SetHeight(40)
-	 LarthUF["boss"..i].Frame:Show()
-	 LarthUF["boss"..i].Frame:SetPoint("RIGHT", -20, 100-i*50)
+	 LarthUF.Frames["boss"..i] = CreateFrame("Button", "button_boss"..i, UIParent, "SecureUnitButtonTemplate ");
+	 LarthUF.Frames["boss"..i]:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	 LarthUF.Frames["boss"..i]:SetAttribute('type1', 'target')
+	 LarthUF.Frames["boss"..i]:SetAttribute('unit', "boss"..i)
+	 LarthUF.Frames["boss"..i]:SetWidth(50)
+	 LarthUF.Frames["boss"..i]:SetHeight(40)
+	 LarthUF.Frames["boss"..i]:Show()
+	 LarthUF.Frames["boss"..i]:SetPoint("RIGHT", -20, 100-i*50)
 	 LarthUF.setText("boss"..i, "Name", "TOPRIGHT", 20)
 	 LarthUF.setText("boss"..i, "Health", "BOTTOMLEFT", 20)
 	 LarthUF.setText("boss"..i, "Power", "BOTTOMRIGHT", 20)
 
-	 LarthUF["boss"..i].Frame:SetScript("OnUpdate", function(self, elapsed)
+	 LarthUF.Frames["boss"..i]:SetScript("OnUpdate", function(self, elapsed)
 		 if UnitExists("boss"..i) then
 			 LarthUF["boss"..i].Name:SetText(UnitName("boss"..i))
 			 local health = UnitHealth("boss"..i)

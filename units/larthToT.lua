@@ -3,19 +3,19 @@
 -- -----------------------------------------------------------------------------
 
 LarthUF.targettarget = {}
-LarthUF.targettarget.Frame = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
-LarthUF.targettarget.Frame:RegisterForClicks("LeftButtonUp")
-LarthUF.targettarget.Frame:SetWidth(100)
-LarthUF.targettarget.Frame:SetHeight(30)
-LarthUF.targettarget.Frame:SetPoint("BOTTOM", 425, 260)
-LarthUF.targettarget.Frame:SetAttribute('type1', 'target')
-LarthUF.targettarget.Frame:SetAttribute('unit', "targettarget")
+LarthUF.Frames.targettarget = CreateFrame("Button", "button_tot", UIParent, "SecureActionButtonTemplate ");
+LarthUF.Frames.targettarget:RegisterForClicks("LeftButtonUp")
+LarthUF.Frames.targettarget:SetWidth(100)
+LarthUF.Frames.targettarget:SetHeight(30)
+LarthUF.Frames.targettarget:SetPoint("BOTTOM", 425, 260)
+LarthUF.Frames.targettarget:SetAttribute('type1', 'target')
+LarthUF.Frames.targettarget:SetAttribute('unit', "targettarget")
 
 LarthUF.setText("targettarget", "Name", "TOPRIGHT", 16)
 LarthUF.setText("targettarget", "Health", "BOTTOMRIGHT", 16)
 
 
-LarthUF.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)
+LarthUF.Frames.targettarget:SetScript("OnUpdate", function(self, elapsed)
 	if UnitExists("targettarget") then
 		local health = UnitHealth("targettarget")
 		local maxHealth = UnitHealthMax("targettarget")
@@ -32,12 +32,12 @@ LarthUF.targettarget.Frame:SetScript("OnUpdate", function(self, elapsed)
 end)
 
 -- Make the frame clickable and add context menu
-LarthUF.targettarget.Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-LarthUF.targettarget.Frame:SetAttribute("unit", "targettarget")
-LarthUF.targettarget.Frame:SetAttribute("type1", "target")
-LarthUF.targettarget.Frame:SetAttribute("type2", "menu")
-LarthUF.targettarget.Frame.menu = function(self, unit, button, actionType)
-	ToggleDropDownMenu(1, nil, PlayerFrameDropDown, LarthUF.targettarget.Frame, 0, 0)
+LarthUF.Frames.targettarget:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+LarthUF.Frames.targettarget:SetAttribute("unit", "targettarget")
+LarthUF.Frames.targettarget:SetAttribute("type1", "target")
+LarthUF.Frames.targettarget:SetAttribute("type2", "menu")
+LarthUF.Frames.targettarget.menu = function(self, unit, button, actionType)
+	ToggleDropDownMenu(1, nil, PlayerFrameDropDown, LarthUF.Frames.targettarget, 0, 0)
 end
 
-RegisterUnitWatch(LarthUF.targettarget.Frame)
+RegisterUnitWatch(LarthUF.Frames.targettarget)

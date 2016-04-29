@@ -82,6 +82,7 @@ LarthUF = {
 	}
 }
 
+LarthUF.Frames = {}
 
 LarthUF.target = {}
 LarthUF.player = {}
@@ -105,7 +106,7 @@ LarthUF.textBar = function(health)
 end
 
 LarthUF.setText = function (unit, text, position, size)
-	LarthUF[unit][text] = LarthUF[unit].Frame:CreateFontString(nil, "OVERLAY")
+	LarthUF[unit][text] = LarthUF.Frames[unit]:CreateFontString(nil, "OVERLAY")
 	LarthUF[unit][text]:SetPoint(position)
 	LarthUF[unit][text]:SetFont(LarthUF.font, size, "OUTLINE")
 	LarthUF[unit][text]:SetTextColor(1, 1, 1)
@@ -150,7 +151,7 @@ LarthUF.trimUnitName = function(unitName)
 		return derString
 	end
 end
-local function runeColoring(runeType)
+LarthUF.runeColoring = function(runeType)
 	local derString = ""
 	if (runeType == 1) then
 		derString = "ff0000"
@@ -228,9 +229,9 @@ LarthUF.Start:SetScript("OnEvent", function(self, event, ...)
 					cooldown = "_"
 				end
 				if runeReady then
-					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), "# ")
+					tempString = tempString..format("|cff%s%s|r", LarthUF.runeColoring(runeType), "# ")
 				else
-					tempString = tempString..format("|cff%s%s|r", runeColoring(runeType), cooldown.." ")
+					tempString = tempString..format("|cff%s%s|r", LarthUF.runeColoring(runeType), cooldown.." ")
 				end
 			end
 			LarthUF.Special.Text:SetText(tempString)

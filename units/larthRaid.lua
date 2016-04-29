@@ -10,10 +10,10 @@
  -- so we won't show these frames for heal, cause heal needs better anyway
  larthRaidFrame:SetScript("OnEvent", function(self, event, ...)
   for i = 1, 40, 1 do
- 	 if UnitExists("raid"..i) and UnitGroupRolesAssigned("player") ~= "HEALER" and not LarthUF["raid"..i].Frame.IsShown() then
- 		 LarthUF["raid"..i].Frame:Show()
- 	 elseif not UnitExists("raid"..i) and LarthUF["raid"..i].Frame.isShown() then
- 		 LarthUF["raid"..i].Frame:Hide()
+ 	 if UnitExists("raid"..i) and UnitGroupRolesAssigned("player") ~= "HEALER" and not LarthUF.Frames["raid"..i]:IsShown() then
+ 		 LarthUF.Frames["raid"..i]:Show()
+ 	 elseif not UnitExists("raid"..i) and LarthUF.Frames["raid"..i]:IsShown() then
+ 		 LarthUF.Frames["raid"..i]:Hide()
  	 end
   end
  end)
@@ -24,32 +24,32 @@
  for i = 1, 40, 1 do
   -- Create the Frame
   LarthUF["raid"..i] = {}
-  LarthUF["raid"..i].Frame = CreateFrame("Button", "button_raid"..i, UIParent, "SecureUnitButtonTemplate ")
-  LarthUF["raid"..i].Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-  LarthUF["raid"..i].Frame:SetAttribute('type1', 'target')
-  LarthUF["raid"..i].Frame:SetAttribute('unit', "raid"..i)
-  LarthUF["raid"..i].Frame:SetAttribute('type2', 'spell')
+  LarthUF.Frames["raid"..i] = CreateFrame("Button", "button_raid"..i, UIParent, "SecureUnitButtonTemplate ")
+  LarthUF.Frames["raid"..i]:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+  LarthUF.Frames["raid"..i]:SetAttribute('type1', 'target')
+  LarthUF.Frames["raid"..i]:SetAttribute('unit', "raid"..i)
+  LarthUF.Frames["raid"..i]:SetAttribute('type2', 'spell')
   -- yeah it's only tricks of the trade (Schurkenhandel) here, go cry if you're no rogue
-  LarthUF["raid"..i].Frame:SetAttribute('spell', "Tricks of the Trade")
-  LarthUF["raid"..i].Frame:SetWidth(120)
-  LarthUF["raid"..i].Frame:SetHeight(20)
+  LarthUF.Frames["raid"..i]:SetAttribute('spell', "Tricks of the Trade")
+  LarthUF.Frames["raid"..i]:SetWidth(120)
+  LarthUF.Frames["raid"..i]:SetHeight(20)
   -- Position the Frame
   --
   if i <= 25 then
- 	 LarthUF["raid"..i].Frame:SetPoint("TOPLEFT", 15, -300-i*20)
+ 	 LarthUF.Frames["raid"..i]:SetPoint("TOPLEFT", 15, -300-i*20)
   else
- 	 LarthUF["raid"..i].Frame:SetPoint("TOPLEFT", 150, -300-(i-25)*20)
+ 	 LarthUF.Frames["raid"..i]:SetPoint("TOPLEFT", 150, -300-(i-25)*20)
   end
-  LarthUF["raid"..i].Frame:Hide()
+  LarthUF.Frames["raid"..i]:Hide()
 
   LarthUF.setText("raid"..i, "Name", "LEFT", 14)
   LarthUF.setText("raid"..i, "Health", "RIGHT", 14)
 
-  LarthUF["raid"..i].Frame:RegisterEvent("GROUP_ROSTER_UPDATE")
-  LarthUF["raid"..i].Frame:RegisterEvent("PLAYER_ROLES_ASSIGNED")
-     LarthUF["raid"..i].Frame:RegisterEvent("UNIT_NAME_UPDATE")
+  LarthUF.Frames["raid"..i]:RegisterEvent("GROUP_ROSTER_UPDATE")
+  LarthUF.Frames["raid"..i]:RegisterEvent("PLAYER_ROLES_ASSIGNED")
+     LarthUF.Frames["raid"..i]:RegisterEvent("UNIT_NAME_UPDATE")
 
-  LarthUF["raid"..i].Frame:SetScript("OnEvent", function(self, event, ...)
+  LarthUF.Frames["raid"..i]:SetScript("OnEvent", function(self, event, ...)
      if UnitExists("raid"..i) then
  		 local class, classFileName = UnitClass("raid"..i)
  		 local role = UnitGroupRolesAssigned("raid"..i)
@@ -73,7 +73,7 @@
   end)
 
   -- guess i could move this to OnEvent
-  LarthUF["raid"..i].Frame:SetScript("OnUpdate", function(self, elapsed)
+  LarthUF.Frames["raid"..i]:SetScript("OnUpdate", function(self, elapsed)
  	 if UnitExists("raid"..i) then
  		 local health = UnitHealth("raid"..i)
  		 local maxHealth = UnitHealthMax("raid"..i)
@@ -86,11 +86,11 @@
  	 end
   end)
 
-  LarthUF["raid"..i].Frame:SetScript("OnEnter", function(self, elapsed)
+  LarthUF.Frames["raid"..i]:SetScript("OnEnter", function(self, elapsed)
  	 LarthUF["raid"..i].Name:SetTextColor(0.7, 0.7, 0.7)
   end)
 
-  LarthUF["raid"..i].Frame:SetScript("OnLeave", function(self, elapsed)
+  LarthUF.Frames["raid"..i]:SetScript("OnLeave", function(self, elapsed)
  	 local class, classFileName = UnitClass("raid"..i)
  	 if (classFileName) then
  		 LarthUF["raid"..i].Name:SetTextColor(RAID_CLASS_COLORS[classFileName].r, RAID_CLASS_COLORS[classFileName].g, RAID_CLASS_COLORS[classFileName].b)

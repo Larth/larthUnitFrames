@@ -1,18 +1,18 @@
-LarthUF.player.Frame = CreateFrame("Button", "larthPlayerFrame", UIParent, "SecureUnitButtonTemplate")
-LarthUF.player.Frame:SetWidth(250)
-LarthUF.player.Frame:SetHeight(50)
-LarthUF.player.Frame:SetPoint("BOTTOM", -350, 200)
+LarthUF.Frames.player = CreateFrame("Button", "larthPlayerFrame", UIParent, "SecureUnitButtonTemplate")
+LarthUF.Frames.player:SetWidth(250)
+LarthUF.Frames.player:SetHeight(50)
+LarthUF.Frames.player:SetPoint("BOTTOM", -350, 200)
 
 -- Make the frame clickable and add context menu
-LarthUF.player.Frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-LarthUF.player.Frame:SetAttribute("unit", "player")
-LarthUF.player.Frame:SetAttribute("type1", "target")
-LarthUF.player.Frame:SetAttribute("type2", "menu")
-LarthUF.player.Frame.menu = function(self, unit, button, actionType)
-	ToggleDropDownMenu(1, nil, PlayerFrameDropDown, LarthUF.player.Frame, 0, 0)
+LarthUF.Frames.player:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+LarthUF.Frames.player:SetAttribute("unit", "player")
+LarthUF.Frames.player:SetAttribute("type1", "target")
+LarthUF.Frames.player:SetAttribute("type2", "menu")
+LarthUF.Frames.player.menu = function(self, unit, button, actionType)
+	ToggleDropDownMenu(1, nil, PlayerFrameDropDown, LarthUF.Frames.player, 0, 0)
 end
 -- remind yourself what this is for
-RegisterUnitWatch(LarthUF.player.Frame)
+RegisterUnitWatch(LarthUF.Frames.player)
 
 
 -- place the texts inside the frame
@@ -27,7 +27,7 @@ LarthUF.setText("player", "Aura", "TOPRIGHT", 14)
 -- show durations of the important buffs/debuffs specified somewhere else
 -- maybe put a timer thing here?
 -- just saw this: there is some cast timer, too.
-LarthUF.player.Frame:SetScript("OnUpdate", function(self, elapsed)
+LarthUF.Frames.player:SetScript("OnUpdate", function(self, elapsed)
 	local spell, _, _, _, _, endTime = UnitCastingInfo("player")
 	if spell then
 		local finish = endTime/1000 - GetTime()
@@ -52,18 +52,17 @@ end)
 
 
 -- updating health and power when it is needed (works most of the time)
-LarthUF.player.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-LarthUF.player.Frame:RegisterEvent("UNIT_HEALTH_FREQUENT")
-LarthUF.player.Frame:RegisterEvent("UNIT_POWER_FREQUENT")
+LarthUF.Frames.player:RegisterEvent("PLAYER_ENTERING_WORLD")
+LarthUF.Frames.player:RegisterEvent("UNIT_HEALTH_FREQUENT")
+LarthUF.Frames.player:RegisterEvent("UNIT_POWER_FREQUENT")
 
-LarthUF.player.Frame:SetScript("OnEvent", function(self, event, ...)
+LarthUF.Frames.player:SetScript("OnEvent", function(self, event, ...)
 	if (event == "UNIT_POWER_FREQUENT") then
 		LarthUF.setPower("player")
 	elseif (event == "UNIT_HEALTH_FREQUENT") then
 		LarthUF.setHealth("player")
 	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
 		local localizedClass, englishClass, classIndex = UnitClass("player")
-		--no name here, name is spammed in the onUpdate atm
 		--LarthUF.player.Name:SetText(UnitName("player"))
 		LarthUF.setHealth("player")
 		LarthUF.setPower("player")
