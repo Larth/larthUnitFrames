@@ -3,8 +3,8 @@ LarthUF.ROGUE.Init = function()
   local LarthNotify = CreateFrame("Button", "LarthNotify", UIParent, "SecureActionButtonTemplate")
   LarthNotify:RegisterForClicks("LeftButtonUp", "RightButtonUp")
   -- this works for whatever reason
-  -- for Instant Poison both clicks works, if your spec uses
-  -- Deadly Poison only RightButtonUp woks
+  -- for Instant Poison both clicks work, if your spec uses
+  -- Deadly Poison only RightButtonUp works
   LarthNotify:SetAttribute('spell2', 'Deadly Poison')
   LarthNotify:SetAttribute('type', 'spell')
   LarthNotify:SetAttribute('spell', 'Instant Poison')

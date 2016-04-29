@@ -1,9 +1,7 @@
 LarthUF = {
 	Classes = {
 		DEATHKNIGHT = {
-			Buff = {
-                {57330, "0099ff"} --horn/remove
-            },
+			Buff = {  },
 			Debuff = {
                 {55095, "6666ff"}, --frost fever
                 {55078, "00ff00"}  --blood plague
@@ -270,7 +268,7 @@ end)
 -- Create Special blah blah frame
 -- -----------------------------------------------------------------------------
 LarthUF.Special = {}
-LarthUF.Special.Frame = CreateFrame("Frame", "larsClassSpecial", UIParent)
+LarthUF.Special.Frame = CreateFrame("Frame", "larthClassSpecial", UIParent)
 LarthUF.Special.Frame:SetFrameLevel(3)
 LarthUF.Special.Frame:SetWidth(50)
 LarthUF.Special.Frame:SetHeight(50)
