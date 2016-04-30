@@ -218,6 +218,7 @@ LarthUF.Start:SetScript("OnEvent", function(self, event, ...)
 		end
 -- Class Customization End -----------------------------------------------------
 		-- some bad code here
+
 		if (classIndex == 6) then
 			LarthUF.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
 			local tempString = "";
@@ -240,25 +241,25 @@ LarthUF.Start:SetScript("OnEvent", function(self, event, ...)
 
 		if ((classIndex == 4) or (classIndex == 11)) then
 			LarthUF.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
-                local countAnt = select(4, UnitAura("player", "Anticipation"))
+				local countAnt = select(4, UnitAura("player", "Anticipation"))
 				local comboPoints = GetComboPoints("player")
-                local strText = {}
-                local strFormat = "|cff%s%s|cff%s%s|r"
-                local strColor = {}
+				local strText = {}
+				local strFormat = "|cff%s%s|cff%s%s|r"
+				local strColor = {}
 
-                local strAnt = ""
-                local strCombo = ""
+				local strAnt = ""
+				local strCombo = ""
 
-                if countAnt == nil then countAnt = 0 end
+				if countAnt == nil then countAnt = 0 end
 
-                for i=1, comboPoints, 1 do
-                    if countAnt >= i then
-                        strAnt = strAnt.." # "
-                    else
-                        strCombo = strCombo.." # "
-                    end
-                end
-                LarthUF.Special.Text:SetText(format("|cff%s%s|cff%s%s|r", "ffffff", strCombo, "ff0000", strAnt))
+				for i=1, comboPoints, 1 do
+				    if countAnt >= i then
+				        strAnt = strAnt.." # "
+				    else
+				        strCombo = strCombo.." # "
+				    end
+				end
+				LarthUF.Special.Text:SetText(format("|cff%s%s|cff%s%s|r", "ffffff", strCombo, "ff0000", strAnt))
 			end)
 		end
 	end

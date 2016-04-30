@@ -28,7 +28,7 @@
 
 	 LarthUF.Frames["boss"..i]:SetScript("OnUpdate", function(self, elapsed)
 		 if UnitExists("boss"..i) then
-			 LarthUF["boss"..i].Name:SetText(UnitName("boss"..i))
+			 LarthUF["boss"..i].Name:SetText(LarthUF.trimUnitName(UnitName("boss"..i)))
 			 local health = UnitHealth("boss"..i)
 			 local maxHealth = UnitHealthMax("boss"..i)
 			 local percent = LarthUF.round(100*health/maxHealth, 0)
