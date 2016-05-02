@@ -97,9 +97,17 @@ LarthUF.textBar = function(health)
 	local lifef = LarthUF.round(health, 0)
 	for i=0, 100, 10 do
 		if lifef >= i and lifef < i+10 then
-			derString = derString..format("|cff%s%s|r", "ff0000", lifef)
+			if lifef > 50 then
+				derString = derString..format("|cff%s%s|r", "ff0000", lifef)
+			else
+				derString = derString..format("|cff%s%s|r", "ffffff", lifef)
+			end
+		elseif i % 20 == 0 then
+			if lifef > 50 then derString = derString..format("|cff%s%s|r", "999999", i)
+			else derString = derString..format("|cff%s%s|r", "ff0000", i) end
 		else
-			derString = derString..i
+			if lifef > 50 then derString = derString..format("|cdd%s%s|r", "ffffff", i)
+			else derString = derString..format("|cff%s%s|r", "ff3333", i) end
 		end
 	end
 	return derString
@@ -112,11 +120,18 @@ LarthUF.setText = function (unit, text, position, size)
 	LarthUF[unit][text]:SetTextColor(1, 1, 1)
 end
 
+
+
 -- set the health texts
 LarthUF.setHealth = function (unit)
 	local health = UnitHealth(unit)
 	local maxHealth = UnitHealthMax(unit)
 	local percent = 100*health/maxHealth
+	if percent > 50 then
+		LarthUF[unit].Health:SetTextColor(1,1,1)
+	else
+		LarthUF[unit].Health:SetTextColor(1,0,0)
+	end
 	LarthUF[unit].Health:SetText(LarthUF.textBar(percent))
 	LarthUF[unit].HealthAbs:SetTextColor((1-percent/100)*2, percent/50, 0)
 	if health > 999999 then

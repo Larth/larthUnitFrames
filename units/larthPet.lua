@@ -19,6 +19,7 @@ LarthUF.setText("pet", "Name", "TOPLEFT", 16)
 LarthUF.Frames.pet:RegisterEvent("UNIT_HEALTH_FREQUENT")
 LarthUF.Frames.pet:RegisterEvent("UNIT_PET")
 LarthUF.Frames.pet:RegisterEvent("UNIT_AURA")
+LarthUF.Frames.pet:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 LarthUF.Frames.pet:SetScript("OnEvent", function(self, event, ...)
     if (event == "UNIT_AURA") then
