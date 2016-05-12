@@ -12,7 +12,9 @@ LarthUF = {
                 {52610, "ffff00"}, --Savage Roar
                 {102543, "0000ff"},--Incarnation CAT
                 {106952, "ff0000"}, --Berserk
-                {16974, "00ff00"}--Predatory Swiftness
+                {16974, "00ff00"}, --Predatory Swiftness
+								{100977, "00ff00"}, --Harmony
+								{16870, "ffffff"} --Omen of Clarity
                 },
 			Debuff = {
                 {1079, "ff0000"}, --Rip
