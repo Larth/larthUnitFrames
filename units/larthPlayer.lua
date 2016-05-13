@@ -1,7 +1,7 @@
 LarthUF.Frames.player = CreateFrame("Button", "larthPlayerFrame", UIParent, "SecureUnitButtonTemplate")
 LarthUF.Frames.player:SetWidth(250)
 LarthUF.Frames.player:SetHeight(50)
-LarthUF.Frames.player:SetPoint("BOTTOM", -350, 200)
+LarthUF.Frames.player:SetPoint("CENTER", -350, -200)
 
 -- Make the frame clickable and add context menu
 LarthUF.Frames.player:RegisterForClicks("LeftButtonUp", "RightButtonUp")

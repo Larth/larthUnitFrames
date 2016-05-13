@@ -35,10 +35,10 @@
   LarthUF.Frames["raid"..i]:SetHeight(20)
   -- Position the Frame
   --
-  if i <= 25 then
- 	 LarthUF.Frames["raid"..i]:SetPoint("TOPLEFT", 15, -300-i*20)
+  if i <= 20 then
+ 	 LarthUF.Frames["raid"..i]:SetPoint("TOPLEFT", 15, -400-i*20)
   else
- 	 LarthUF.Frames["raid"..i]:SetPoint("TOPLEFT", 150, -300-(i-25)*20)
+ 	 LarthUF.Frames["raid"..i]:SetPoint("TOPLEFT", 150, -400-(i-20)*20)
   end
   LarthUF.Frames["raid"..i]:Hide()
 

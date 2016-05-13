@@ -3,7 +3,7 @@ LarthUF.Frames.target = CreateFrame("Button", "larthTargetFrame", UIParent, "Sec
 LarthUF.Frames.target:SetAttribute("unit", "target")
 LarthUF.Frames.target:SetWidth(250)
 LarthUF.Frames.target:SetHeight(50)
-LarthUF.Frames.target:SetPoint("BOTTOM", 350, 200)
+LarthUF.Frames.target:SetPoint("CENTER", 350, -200)
 RegisterUnitWatch(LarthUF.Frames.target)
 
 -- Make the frame clickable and add context menu
