@@ -151,7 +151,7 @@ LarthUF.setPower = function(unit)
 	local maxpower = UnitPowerMax(unit)
 	local percent = 100*power/maxpower
 	LarthUF[unit].PowerAbs:SetText(power)
-	LarthUF[unit].Power:SetText(LarthUF.textBar(percent))
+	LarthUF[unit].Power:SetText(LarthUF.betaBar(percent, unit))
 end
 LarthUF.trimUnitName = function(unitName)
 	local derString = ""
@@ -298,3 +298,39 @@ LarthUF.Special.Text = LarthUF.Special.Frame:CreateFontString(nil, "OVERLAY")
 LarthUF.Special.Text:SetPoint("CENTER")
 LarthUF.Special.Text:SetFont(LarthUF.font, 20, "OUTLINE")
 LarthUF.Special.Text:SetTextColor(1, 1, 1)
+
+
+-- rumprobierteil
+
+LarthUF.powerColors = {
+	MANA = {"0000ff", "ffff00"},
+	RAGE = {"ff0000", "00ffff"},
+	FOCUS = {"ff8040", "007fbf"},
+	ENERGY = {"ffff00", "0000ff"},
+	CHI = {"b5ffeb", "4a0014"},
+	RUNIC_POWER = {"00D1FF", "ff2e00"}
+}
+LarthUF.betaBar = function(health, unit)
+	local derString = ""
+	local powerToken = select(2, UnitPowerType(unit))
+	local color = LarthUF.powerColors[powerToken][1]
+	local kontrast = LarthUF.powerColors[powerToken][2]
+	if not color or not kontrast then
+		color = "ffffff"
+		kontrast = "ff0000"
+	end
+	local lifef = LarthUF.round(health, 0)
+	for i=0, 100, 10 do
+		if lifef >= i and lifef < i+10 then
+			if lifef > 50 then
+				derString = derString..format("|cff%s%s|r", kontrast, lifef)
+			else
+				derString = derString..format("|cff%s%s|r", color, lifef)
+			end
+		else
+			if lifef > 50 then derString = derString..format("|cff%s%s|r", color, i)
+			else derString = derString..format("|cff%s%s|r", kontrast, i) end
+		end
+	end
+	return derString
+end

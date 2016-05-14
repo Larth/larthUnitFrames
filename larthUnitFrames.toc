@@ -1,5 +1,5 @@
 ## Interface: 60200
-## Version: 0.4.2
+## Version: 0.4.5
 ## Title: larthUnitFrames
 ## Notes: Text based Unit Frames
 ## Author: Lars Thevissen
