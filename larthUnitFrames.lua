@@ -313,8 +313,10 @@ LarthUF.powerColors = {
 LarthUF.betaBar = function(health, unit)
 	local derString = ""
 	local powerToken = select(2, UnitPowerType(unit))
-	local color = LarthUF.powerColors[powerToken][1]
-	local kontrast = LarthUF.powerColors[powerToken][2]
+	if LarthUF.powerColors[powerToken] then
+		local color = LarthUF.powerColors[powerToken][1]
+		local kontrast = LarthUF.powerColors[powerToken][2]
+	end
 	if not color or not kontrast then
 		color = "ffffff"
 		kontrast = "ff0000"
