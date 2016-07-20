@@ -237,23 +237,23 @@ LarthUF.Start:SetScript("OnEvent", function(self, event, ...)
 		-- some bad code here
 
 		if (classIndex == 6) then
-			LarthUF.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
-			local tempString = "";
-			for i=1, 6, 1 do
-				local start, duration, runeReady = GetRuneCooldown(i)
-				runeType = GetRuneType(i)
-				local cooldown = LarthUF.round(duration-GetTime()+start)
-				if cooldown > 9 or cooldown < 0 then
-					cooldown = "_"
-				end
-				if runeReady then
-					tempString = tempString..format("|cff%s%s|r", LarthUF.runeColoring(runeType), "# ")
-				else
-					tempString = tempString..format("|cff%s%s|r", LarthUF.runeColoring(runeType), cooldown.." ")
-				end
-			end
-			LarthUF.Special.Text:SetText(tempString)
-			end)
+			-- LarthUF.Special.Frame:SetScript("OnUpdate", function(self, elapsed)
+			-- local tempString = "";
+			-- for i=1, 6, 1 do
+			-- 	local start, duration, runeReady = GetRuneCooldown(i)
+			-- 	runeType = GetRuneType(i)
+			-- 	local cooldown = LarthUF.round(duration-GetTime()+start)
+			-- 	if cooldown > 9 or cooldown < 0 then
+			-- 		cooldown = "_"
+			-- 	end
+			-- 	if runeReady then
+			-- 		tempString = tempString..format("|cff%s%s|r", LarthUF.runeColoring(runeType), "# ")
+			-- 	else
+			-- 		tempString = tempString..format("|cff%s%s|r", LarthUF.runeColoring(runeType), cooldown.." ")
+			-- 	end
+			-- end
+			-- LarthUF.Special.Text:SetText(tempString)
+			-- end)
 		end
 
 		if ((classIndex == 4) or (classIndex == 11)) then

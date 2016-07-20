@@ -43,14 +43,14 @@ LarthUF.Frames.target:SetScript("OnUpdate", function(self, elapsed)
 
 		 local buffString = ""
 		 if ( LarthUF.target.Watch) then
-			 for i=1, # LarthUF.target.Watch do
-                    local spellName = select(1, GetSpellInfo(LarthUF.target.Watch[i][1]))
-                    local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", spellName)
-                     if(unitCaster=="player")then
-                         buffString = buffString..format("|cff%s%s|r", LarthUF.target.Watch[i][2], (LarthUF.round(expirationTime - GetTime()).." "))
-                     end
-                 -- end
-			 end
+			--  for i=1, # LarthUF.target.Watch do
+      --               local spellName = select(1, GetSpellInfo(LarthUF.target.Watch[i][1]))
+      --               local _, _, _, _, _, _, expirationTime, unitCaster = UnitDebuff("target", spellName)
+      --                if(unitCaster=="player")then
+      --                    buffString = buffString..format("|cff%s%s|r", LarthUF.target.Watch[i][2], (LarthUF.round(expirationTime - GetTime()).." "))
+      --                end
+      --            -- end
+			--  end
 			 LarthUF.target.Aura:SetText(buffString)
 		 end
 	end
